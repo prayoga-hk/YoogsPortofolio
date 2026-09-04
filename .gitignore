@@ -1,6 +1,18 @@
 #dependencies
 node_modules/
+
 #Environment variables
 .env
 .env.*
 !.env.example
+
+#Build
+dist/
+build/
+
+#Logs
+*.logs
+
+#OS
+.DS_Store
+Thumbs.db
