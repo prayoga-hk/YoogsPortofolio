@@ -1,66 +1,247 @@
+import FadeContent from './react-bits/FadeContent';
+import AnimatedContent from './react-bits/AnimatedContent';
+import SpotlightCard from './react-bits/SpotlightCard';
+import BlurText from './react-bits/BlurText';
+
+const SECTION =
+    'scroll-mt-16 min-h-screen h-screen flex items-center px-4 sm:px-6 pt-16 pb-8 bg-[#0a0e16] overflow-hidden';
+
 export default function Skills({ skills, settings }) {
+    const accentColor = settings?.accent_color || '#ef4444';
+
+    // =====================================================
+    // LEVEL → PERSENTASE + WARNA
+    // =====================================================
+    const LEVEL_STYLES = {
+        Beginner: {
+            percentage: 25,
+            text: 'text-[#64748b]',
+            bar: '#64748b',
+        },
+
+        Intermediate: {
+            percentage: 50,
+            text: 'text-[#ef4444]',
+            bar: '#ef4444',
+        },
+
+        Advanced: {
+            percentage: 75,
+            text: 'text-[#ef4444]',
+            bar: '#ef4444',
+        },
+
+        Expert: {
+            percentage: 100,
+            text: 'text-[#ef4444]',
+            bar: '#ef4444',
+        },
+    };
+
+    // =====================================================
+    // MENGAMBIL STYLE BERDASARKAN LEVEL
+    // =====================================================
+    const getLevelStyle = (level) => {
+        return (
+            LEVEL_STYLES[level] || {
+                percentage: 50,
+                text: 'text-[#ef4444]',
+                bar: '#ef4444',
+            }
+        );
+    };
+
+    // Warna spotlight mengikuti accent color dari settings
+    const spotlight = `${accentColor}40`;
+
+    // =====================================================
+    // JIKA BELUM ADA DATA SKILL
+    // =====================================================
     if (!skills || skills.length === 0) {
         return (
-            <section id="skills" className="py-16 px-6 border-t border-[#2d3342] bg-[#0a0e16]">
-                <div className="max-w-4xl mx-auto text-center">
-                    <p className="text-[#64748b] font-mono">// 02. KEAHLIAN & TECH STACK</p>
-                    <p className="text-[#94a3b8] mt-4">Belum ada data skill.</p>
+            <section id="skills" className={SECTION}>
+                <div className="max-w-6xl mx-auto w-full text-center">
+                    <p className="text-[#64748b] font-mono text-xs sm:text-sm">
+                        // 02. KEAHLIAN & TECH STACK
+                    </p>
+
+                    <p className="text-[#94a3b8] mt-4 text-sm">
+                        Belum ada data skill.
+                    </p>
                 </div>
             </section>
         );
     }
 
-    // Skill level mapping
-    const getLevelColor = (level) => {
-        const colors = {
-            'Beginner': 'text-[#64748b]',
-            'Intermediate': 'text-[#eab308]',
-            'Advanced': 'text-[#22c55e]',
-            'Expert': 'text-[#ef4444]'
-        };
-        return colors[level] || 'text-[#94a3b8]';
-    };
-
-    const getLevelWidth = (level) => {
-        const widths = {
-            'Beginner': 'w-1/4',
-            'Intermediate': 'w-1/2',
-            'Advanced': 'w-3/4',
-            'Expert': 'w-full'
-        };
-        return widths[level] || 'w-1/2';
-    };
-
+    // =====================================================
+    // MAIN SECTION
+    // =====================================================
     return (
-        <section id="skills" className="py-16 px-6 border-t border-[#2d3342] bg-[#0a0e16]">
-            <div className="max-w-4xl mx-auto">
-                <p className="text-[#ef4444] font-mono text-sm mb-2">// 02. KEAHLIAN & TECH STACK</p>
-                <h2 className="text-2xl md:text-3xl font-bold text-white mb-8">Keahlian & Tech Stack</h2>
+        <section id="skills" className={SECTION}>
+            <div className="max-w-6xl mx-auto w-full h-full flex flex-col justify-center">
 
-                <div className="space-y-4">
-                    {skills.map((skill) => (
-                        <div key={skill.id} className="bg-[#0f131c] border border-[#2d3342] rounded-lg p-4">
-                            <div className="flex justify-between items-center mb-1">
-                                <span className="text-white font-medium">{skill.name}</span>
-                                <span className={`text-sm font-mono ${getLevelColor(skill.level)}`}>
-                                    {skill.level || 'Intermediate'} ({skill.percentage || 80}%)
-                                </span>
-                            </div>
-                            <div className="w-full bg-[#181c24] rounded-full h-1.5">
-                                <div
-                                    className="h-1.5 rounded-full transition-all duration-500"
-                                    style={{
-                                        width: skill.percentage ? `${skill.percentage}%` : '80%',
-                                        backgroundColor: skill.level === 'Expert' ? '#ef4444' : '#ef4444'
-                                    }}
-                                ></div>
-                            </div>
-                            {skill.category && (
-                                <p className="text-[#64748b] text-xs font-mono mt-1">{skill.category}</p>
-                            )}
-                        </div>
-                    ))}
+                {/* =================================================
+                    HEADER
+                ================================================= */}
+                <div className="mb-6 sm:mb-8">
+
+                    <FadeContent
+                        blur
+                        duration={700}
+                        threshold={0.1}
+                    >
+                        <p className="text-[#ef4444] font-mono text-xs sm:text-sm mb-2">
+                            // 02. KEAHLIAN & TECH STACK
+                        </p>
+                    </FadeContent>
+
+                    <BlurText
+                        text="Keahlian & Tech Stack"
+                        delay={70}
+                        animateBy="words"
+                        className="
+                            text-3xl
+                            sm:text-4xl
+                            lg:text-5xl
+                            font-bold
+                            text-white
+                        "
+                    />
                 </div>
+
+                {/* =================================================
+                    SKILLS LIST
+                ================================================= */}
+                <div
+                    className="
+                        space-y-3
+                        sm:space-y-4
+                        max-h-[65vh]
+                        overflow-y-auto
+                        pr-1
+                        no-scrollbar
+                    "
+                >
+                    {skills.map((skill, index) => {
+
+                        // Ambil level dari database
+                        const level = skill.level || 'Intermediate';
+
+                        // Ambil warna + persentase berdasarkan level
+                        const style = getLevelStyle(level);
+
+                        // Persentase otomatis dari level
+                        const percentage = style.percentage;
+
+                        return (
+                            <AnimatedContent
+                                key={skill.id}
+                                distance={40}
+                                delay={index * 0.08}
+                                duration={0.7}
+                                threshold={0.05}
+                            >
+                                <SpotlightCard
+                                    className="
+                                        !rounded-md
+                                        !border-[#2d3342]
+                                        !bg-[#0f131c]
+                                        !p-4
+                                        hover:!border-[#3d4456]
+                                        transition-colors
+                                    "
+                                    spotlightColor={spotlight}
+                                >
+                                    <div className="relative z-10">
+
+                                        {/* =================================
+                                            NAMA + LEVEL + PERSENTASE
+                                        ================================= */}
+                                        <div
+                                            className="
+                                                flex
+                                                justify-between
+                                                items-center
+                                                gap-4
+                                                mb-2
+                                            "
+                                        >
+                                            {/* Nama skill */}
+                                            <span
+                                                className="
+                                                    text-white
+                                                    font-medium
+                                                    truncate
+                                                "
+                                            >
+                                                {skill.name}
+                                            </span>
+
+                                            {/* Level + percentage */}
+                                            <span
+                                                className={`
+                                                    text-xs
+                                                    sm:text-sm
+                                                    font-mono
+                                                    whitespace-nowrap
+                                                    ${style.text}
+                                                `}
+                                            >
+                                                {level} ({percentage}%)
+                                            </span>
+                                        </div>
+
+                                        {/* =================================
+                                            PROGRESS BAR
+                                        ================================= */}
+                                        <div
+                                            className="
+                                                w-full
+                                                bg-[#181c24]
+                                                rounded-full
+                                                h-1.5
+                                                overflow-hidden
+                                            "
+                                        >
+                                            <div
+                                                className="
+                                                    h-1.5
+                                                    rounded-full
+                                                    transition-all
+                                                    duration-1000
+                                                    ease-out
+                                                "
+                                                style={{
+                                                    width: `${percentage}%`,
+                                                    backgroundColor:
+                                                        style.bar,
+                                                }}
+                                            />
+                                        </div>
+
+                                        {/* =================================
+                                            CATEGORY
+                                        ================================= */}
+                                        {skill.category && (
+                                            <p
+                                                className="
+                                                    text-[#64748b]
+                                                    text-xs
+                                                    font-mono
+                                                    mt-1.5
+                                                "
+                                            >
+                                                {skill.category}
+                                            </p>
+                                        )}
+
+                                    </div>
+                                </SpotlightCard>
+                            </AnimatedContent>
+                        );
+                    })}
+                </div>
+
             </div>
         </section>
     );

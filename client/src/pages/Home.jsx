@@ -9,6 +9,8 @@ import Education from '../components/Education';
 import Experience from '../components/Experience';
 import Contact from '../components/Contact';
 import Footer from '../components/Footer';
+import ClickSpark from '../components/react-bits/ClickSpark';
+import LoadingScreen from '../components/LoadingScreen';
 
 export default function Home() {
     const [profile, setProfile] = useState(null);
@@ -41,7 +43,7 @@ export default function Home() {
                     supabase.from('educations').select('*').eq('published', true).order('order_index', { ascending: true }),
                     supabase.from('experiences').select('*').eq('published', true).order('order_index', { ascending: true }),
                     supabase.from('social_links').select('*').eq('is_active', true).order('order_index', { ascending: true }),
-                    supabase.from('site_settings').select('*').limit(1).single()
+                    supabase.from('site_settings').select('*').limit(1).maybeSingle(),
                 ]);
 
                 if (profileRes.error && profileRes.error.code !== 'PGRST116') throw profileRes.error;
@@ -51,6 +53,9 @@ export default function Home() {
                 if (experiencesRes.error) throw experiencesRes.error;
                 if (socialLinksRes.error) throw socialLinksRes.error;
                 if (settingsRes.error && settingsRes.error.code !== 'PGRST116') throw settingsRes.error;
+
+                console.log('PROJECTS:', projectsRes.data);
+                console.log('PROJECTS ERROR:', projectsRes.error);
 
                 setProfile(profileRes.data);
                 setSkills(skillsRes.data || []);
@@ -70,11 +75,7 @@ export default function Home() {
     }, []);
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-[#0a0e16]">
-                <div className="text-[#94a3b8] font-mono">Loading...</div>
-            </div>
-        );
+        return <LoadingScreen />;
     }
 
     if (error) {
@@ -85,17 +86,21 @@ export default function Home() {
         );
     }
 
+    const sparkColor = settings?.accent_color || '#ef4444';
+
     return (
-        <div className="min-h-screen bg-[#0a0e16] text-white">
-            <Navbar profile={profile} settings={settings} />
-            <Hero profile={profile} settings={settings} />
-            <About profile={profile} />
-            <Skills skills={skills} settings={settings} />
-            <Projects projects={projects} settings={settings} />
-            <Education educations={educations} settings={settings} />
-            <Experience experiences={experiences} settings={settings} />
-            <Contact socialLinks={socialLinks} settings={settings} profile={profile} />
-            <Footer profile={profile} settings={settings} />
-        </div>
+        <ClickSpark sparkColor={sparkColor} sparkCount={10} sparkRadius={18} sparkSize={12} duration={450}>
+            <div className="min-h-screen bg-[#0a0e16] text-white">
+                <Navbar profile={profile} settings={settings} />
+                <Hero profile={profile} settings={settings} />
+                <About profile={profile} />
+                <Skills skills={skills} settings={settings} />
+                <Projects projects={projects} settings={settings} />
+                <Education educations={educations} settings={settings} />
+                <Experience experiences={experiences} settings={settings} />
+                <Contact socialLinks={socialLinks} settings={settings} profile={profile} />
+                <Footer profile={profile} settings={settings} />
+            </div>
+        </ClickSpark>
     );
 }
