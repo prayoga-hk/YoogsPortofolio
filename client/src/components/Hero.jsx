@@ -1,21 +1,21 @@
 import BlurText from './react-bits/BlurText';
-import DecryptedText from './react-bits/DecryptedText';
-import FadeContent from './react-bits/FadeContent';
 import AnimatedContent from './react-bits/AnimatedContent';
 import Magnet from './react-bits/Magnet';
-import PhotoCarousel, { resolveGalleryImages } from './PhotoCarousel';
+import DotGrid from './react-bits/DotGrid';
+import TiltedCard from './react-bits/TiltedCard';
+import { resolvePrimaryPhoto } from './PhotoCarousel';
 
 export default function Hero({ profile, settings }) {
     const accentColor = settings?.accent_color || '#ef4444';
     const name = profile?.name || 'Ahmad Rizky Pratama';
-    const title = profile?.title || 'Junior Full-Stack & Back-End Developer';
-    const images = resolveGalleryImages(profile);
+    const photoUrl = resolvePrimaryPhoto(profile);
 
     return (
         <section
             id="home"
             className="
                 scroll-mt-16
+                relative
                 h-screen
                 min-h-0
                 flex
@@ -25,8 +25,24 @@ export default function Hero({ profile, settings }) {
                 bg-[#0a0e16]
                 overflow-hidden
             "
-        >
-            <div className="max-w-6xl mx-auto w-full h-full flex items-center">
+      >
+
+        {/* ================= DOTFIELD BACKGROUND ================= */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+            <DotGrid
+            dotSize={4}
+                gap={16}
+                baseColor="#1e293b"
+                activeColor="#ef4444"
+                proximity={120}
+                shockRadius={200}
+                shockStrength={4}
+                resistance={750}
+                returnDuration={1.5}
+            />
+        </div>
+
+            <div className="relative z-10 max-w-6xl mx-auto w-full h-full flex items-center">
 
                 <div
                     className="
@@ -52,19 +68,52 @@ export default function Hero({ profile, settings }) {
                     >
                         <div
                             className="
+                                relative
                                 w-full
                                 max-w-[220px]
                                 sm:max-w-[260px]
                                 md:max-w-[300px]
                                 lg:max-w-none
+                                lg:ml-20
                                 mx-auto
                             "
                         >
-                            <PhotoCarousel
-                                images={images}
-                                alt={name}
-                                accentColor={accentColor}
-                            />
+
+                            <div
+                                className="
+                                    relative
+                                    aspect-[4/5]
+                                    max-h-[70vh]
+                                    rounded-2xl
+                                "
+                            >
+                                {photoUrl ? (
+                                    <TiltedCard
+                                        imageSrc={photoUrl}
+                                        altText={name}
+                                        captionText={name}
+                                        containerHeight="90%"
+                                        containerWidth="90%"
+                                        imageHeight="90%"
+                                        imageWidth="90%"
+                                        rotateAmplitude={12}
+                                        scaleOnHover={1.05}
+                                        showMobileWarning={false}
+                                        showTooltip={true}
+                                        displayOverlayContent={false}
+                                    />
+                                ) : (
+                                    <div className="w-full h-full flex flex-col items-center justify-center gap-3 text-[#64748b] font-mono text-xs sm:text-sm px-6 text-center">
+                                        <span className="text-4xl text-[#2d3342]">
+                                            [ ]
+                                        </span>
+
+                                        <span>
+                                            Tambahkan foto gallery di /admin/profile
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </AnimatedContent>
 
@@ -82,24 +131,6 @@ export default function Hero({ profile, settings }) {
                         "
                     >
 
-                        {/* STATUS */}
-                        <FadeContent duration={600} delay={0}>
-                            <div className="hidden lg:flex items-center gap-2 mb-3">
-                                <span className="w-2 h-2 rounded-full bg-[#ef4444] animate-pulse"></span>
-
-                                <span className="text-[#94a3b8] text-sm font-mono">
-                                    <DecryptedText
-                                        text="Now Still Learning About Programming"
-                                        animateOn="view"
-                                        speed={35}
-                                        maxIterations={10}
-                                        className="text-[#94a3b8]"
-                                        encryptedClassName="text-[#64748b]"
-                                    />
-                                </span>
-                            </div>
-                        </FadeContent>
-
                         {/* NAME */}
                         <BlurText
                             text={name}
@@ -108,62 +139,15 @@ export default function Hero({ profile, settings }) {
                             direction="top"
                             className="
                                 text-2xl
-                                sm:text-3xl
-                                md:text-4xl
-                                lg:text-6xl
+                                sm:text-4xl
+                                md:text-5xl
+                                lg:text-7xl
                                 font-bold
                                 text-white
                                 mb-1
                                 sm:mb-2
                             "
                         />
-
-                        {/* TITLE */}
-                        <FadeContent
-                            duration={700}
-                            delay={150}
-                            blur
-                        >
-                            <p
-                                className="
-                                    text-xs
-                                    sm:text-sm
-                                    md:text-base
-                                    lg:text-2xl
-                                    text-[#94a3b8]
-                                    font-mono
-                                    mb-2
-                                    sm:mb-3
-                                "
-                            >
-                                &gt; {title}
-                            </p>
-                        </FadeContent>
-
-                        {/* DESCRIPTION */}
-                        {profile?.description && (
-                            <AnimatedContent
-                                distance={20}
-                                delay={0.2}
-                                duration={0.7}
-                            >
-                                <p
-                                    className="
-                                        text-xs
-                                        sm:text-sm
-                                        md:text-base
-                                        text-[#94a3b8]
-                                        max-w-lg
-                                        mb-3
-                                        sm:mb-4
-                                        leading-snug
-                                        line-clamp-3
-                                    "
-                                >
-                                    {profile.description}
-                                </p>
-                            </AnimatedContent>
-                        )}
 
                         {/* TAGS */}
                         <AnimatedContent
@@ -217,7 +201,7 @@ export default function Hero({ profile, settings }) {
                                     text-[#94a3b8]
                                     font-mono
                                 ">
-                                    #RPL
+                                    #Tech Enthusiast
                                 </span>
 
                                 <span className="
@@ -237,7 +221,7 @@ export default function Hero({ profile, settings }) {
                                     text-[#94a3b8]
                                     font-mono
                                 ">
-                                    #Fedora Linux
+                                    #Programmer
                                 </span>
                             </div>
                         </AnimatedContent>
@@ -266,7 +250,7 @@ export default function Hero({ profile, settings }) {
                                     magnetStrength={2}
                                 >
                                     <a
-                                        href="#projects"
+                                        href="https://github.com/prayoga-hk"
                                         className="
                                             inline-block
                                             px-3.5
