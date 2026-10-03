@@ -3,21 +3,24 @@ import FadeContent from './react-bits/FadeContent';
 import AnimatedContent from './react-bits/AnimatedContent';
 import DecryptedText from './react-bits/DecryptedText';
 import CountUp from './react-bits/CountUp';
-import Stack from './react-bits/Stack';
-import { resolveGalleryImages } from './PhotoCarousel';
 
 export default function About({ profile }) {
     console.log('ABOUT PROFILE:', profile);
 
-    const galleryImages = resolveGalleryImages(profile);
-
-    const stackCards = galleryImages.map((img, index) => ({
-        id: index + 1,
-        img
-    }));
-
     const name = profile?.name;
-    const title = profile?.title;
+
+    // =====================================================
+    // DATA FASTFETCH (Info Sistem)
+    // =====================================================
+    const fastfetchData = [
+        { label: 'OS', value: 'Fedora Linux 44 (Workstation Edition) x86_64' },
+        { label: 'Host', value: 'IdeaPad Slim 3 14IAH8' },
+        { label: 'Kernel', value: 'Linux 7.2.5-200.fc44.x86_64' },
+        { label: 'Uptime', value: '1 year ago' },
+        { label: 'Shell', value: 'zsh 5.9' },
+        { label: 'WM', value: 'Mutter (Wayland)' },
+        { label: 'Terminal', value: 'ghostty 1.3.1-4.fc44' },
+    ];
 
     if (!profile) {
         return (
@@ -93,7 +96,7 @@ export default function About({ profile }) {
                         grid
                         grid-cols-1
                         lg:grid-cols-2
-                        gap-2
+                        gap-4
                         sm:gap-6
                         lg:gap-14
                         items-center
@@ -101,17 +104,10 @@ export default function About({ profile }) {
                     "
                 >
                     {/* ================================================= */}
-                    {/* PHOTO SECTION */}
+                    {/* TERMINAL FASTFETCH SECTION */}
                     {/* ================================================= */}
-                    <div
-                        className="
-                            order-1
-                            w-full
-                            flex
-                            flex-col
-                            items-center
-                        "
-                    >
+                    <div className="order-1 w-full flex flex-col items-center">
+
                         {/* Label khusus Desktop */}
                         <div className="hidden lg:block w-full">
                             <FadeContent blur duration={600} threshold={0.15}>
@@ -121,61 +117,97 @@ export default function About({ profile }) {
                             </FadeContent>
                         </div>
 
-                        {/* ================= PHOTO + INFO ================= */}
+                        {/* ================= TERMINAL FASTFETCH ================= */}
                         <AnimatedContent
                             distance={40}
                             duration={0.8}
                             delay={0.1}
                             className="w-full flex justify-center"
                         >
-                            <div
-                                className="
-                                    relative
-                                    group
-                                    mx-auto
-                                    w-full
-                                    max-w-[120px]
-                                    sm:max-w-[180px]
-                                    lg:max-w-[320px]
-                                "
-                            >
-                              {/* ================= PHOTO CARD ================= */}
-                              <div
-                                  className="
-                                      relative
-                                      bg-transparent
-                                      aspect-[3/4]
-                                      w-full
-                                      max-w-[180px]
-                                      sm:max-w-[220px]
-                                      lg:max-w-[300px]
-                                      mx-auto
-                                      rounded-2xl
-                                      flex
-                                      items-center
-                                      justify-center
-                                  "
-                              >
-                                  {stackCards.length ? (
-                                      <Stack
-                                          randomRotation
-                                          sensitivity={150}
-                                          sendToBackOnClick
-                                          cardsData={stackCards}
-                                      />
-                                  ) : (
-                                      <div className="w-full h-full flex flex-col items-center justify-center gap-3 text-[#64748b] font-mono text-xs sm:text-sm px-6 text-center">
-                                          <span className="text-3xl text-[#2d3342]">[ ]</span>
-                                          <span>Tambahkan photo_url di admin panel</span>
-                                      </div>
-                                  )}
-                              </div>
+                            <div className="w-full max-w-md">
+                                <div className="bg-[#0f131c] border border-[#2d3342] rounded-md overflow-hidden shadow-[0_0_40px_-16px_rgba(239,68,68,0.3)]">
 
-                                {/* ================= PHOTO INFO ================= */}
-                                <div className="mt-1.5 sm:mt-3 text-center">
+                                    {/* ==== TITLE BAR ==== */}
+                                    <div className="flex items-center gap-2 px-4 py-2 bg-[#181c24] border-b border-[#2d3342]">
+                                        <span className="w-3 h-3 rounded-full bg-[#ef4444]"></span>
+                                        <span className="w-3 h-3 rounded-full bg-[#eab308]"></span>
+                                        <span className="w-3 h-3 rounded-full bg-[#22c55e]"></span>
+                                        <span className="text-[#64748b] text-xs font-mono ml-2">
+                                            ~
+                                        </span>
+                                    </div>
+
+                                    {/* ==== BODY TERMINAL ==== */}
+                                    <div className="p-4 font-mono text-xs sm:text-sm leading-none">
+
+                                        {/* Prompt */}
+                                        <p className="m-0 text-[#94a3b8] mb-3">
+                                            <span className="text-[#ef4444]">└─</span>{' '}
+                                            <span className="text-white">$</span> fastfetch
+                                        </p>
+
+                                        {/* Header user@host + ASCII Art */}
+                                        <div className="flex gap-3 sm:gap-4 mb-3">
+
+                                            {/* ASCII Art Fedora (Kiri) */}
+                                            <pre className="text-[#3c6eb4] font-bold m-0 p-0 text-[8px] sm:text-[10px] leading-[1.1] whitespace-pre">
+{`
+     0@@@@@@@@@@
+   @:            :@
+  @       %@@@@@   @
+ @        @     @   @
+ @        %   ::@   @
+ @   @  @@@@@@      @
+ @ **     %         @
+ @ @      +        @
+ @  @ @@@@       .@
+ @:           :@@
+   @@@@@@@@@@@          `}
+                                            </pre>
+
+                                            {/* Info Sistem (Kanan) */}
+                                            <div className="flex-1">
+                                                <p className="m-0 text-white font-bold">
+                                                    {name?.toLowerCase().split(' ')[0] || 'prayoga'}@fedora
+                                                </p>
+                                                <p className="m-0 text-[#64748b] mb-2">
+                                                    ------------------
+                                                </p>
+                                                {fastfetchData.map((item, i) => (
+                                                    <p key={i} className="m-0">
+                                                        <span className="text-[#ef4444] font-bold">{item.label}:</span>{' '}
+                                                        <span className="text-[#94a3b8]">{item.value}</span>
+                                                    </p>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Color Palette */}
+                                        <div className="flex gap-1 mt-3">
+                                            <span className="w-4 h-3 bg-[#0a0e16] border border-[#2d3342]"></span>
+                                            <span className="w-4 h-3 bg-[#ef4444]"></span>
+                                            <span className="w-4 h-3 bg-[#eab308]"></span>
+                                            <span className="w-4 h-3 bg-[#22c55e]"></span>
+                                            <span className="w-4 h-3 bg-[#06b6d4]"></span>
+                                            <span className="w-4 h-3 bg-[#8b5cf6]"></span>
+                                            <span className="w-4 h-3 bg-[#ec4899]"></span>
+                                            <span className="w-4 h-3 bg-[#94a3b8]"></span>
+                                        </div>
+
+                                        {/* Kursor Berkedip */}
+                                        <p className="m-0 mt-3 text-[#94a3b8]">
+                                            <span className="text-[#ef4444]">└─</span>{' '}
+                                            <span className="text-white">$</span>{' '}
+                                            <span className="inline-block w-2 h-3 bg-[#ef4444] animate-pulse align-middle"></span>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Caption Bawah */}
+                                <div className="mt-2 text-center">
                                     <p className="font-mono text-[10px] sm:text-xs text-[#ef4444] mb-0.5">
                                         <DecryptedText
-                                            text="// profile.photo"
+                                            text="// system.info"
                                             animateOn="view"
                                             speed={40}
                                             maxIterations={8}
@@ -325,7 +357,7 @@ export default function About({ profile }) {
                                     mx-auto
                                 "
                             >
-                                {/* ================= AGE ================= */}
+                                {/* Usia */}
                                 <div className="bg-[#0f131c] border border-[#2d3342] rounded-md p-2 sm:p-3 text-center">
                                     <p className="text-base sm:text-2xl font-bold text-white font-mono">
                                         <CountUp to={16} duration={1.5} />
@@ -335,7 +367,7 @@ export default function About({ profile }) {
                                     </p>
                                 </div>
 
-                                {/* ================= START ================= */}
+                                {/* Mulai */}
                                 <div className="bg-[#0f131c] border border-[#2d3342] rounded-md p-2 sm:p-3 text-center">
                                     <p className="text-base sm:text-2xl font-bold text-white font-mono">
                                         <CountUp to={2021} duration={1.8} separator="" />
@@ -345,7 +377,7 @@ export default function About({ profile }) {
                                     </p>
                                 </div>
 
-                                {/* ================= READY ================= */}
+                                {/* Ready */}
                                 <div className="bg-[#0f131c] border border-[#2d3342] rounded-md p-2 sm:p-3 text-center">
                                     <p className="text-base sm:text-2xl font-bold text-[#22c55e] font-mono">
                                         ON

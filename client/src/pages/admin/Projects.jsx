@@ -13,7 +13,6 @@ export default function Projects() {
         title: '',
         description: '',
         image_url: '',
-        text: '',
         github_url: '',
         demo_url: '',
         technologies: '',
@@ -21,7 +20,6 @@ export default function Projects() {
     });
     const [deleteConfirm, setDeleteConfirm] = useState(null);
 
-    // Fetch projects - BEST PRACTICE: di dalam useEffect
     useEffect(() => {
         const fetchProjects = async () => {
             setLoading(true);
@@ -51,7 +49,6 @@ export default function Projects() {
                 title: project.title || '',
                 description: project.description || '',
                 image_url: project.image_url || '',
-                text: project.text || '',
                 github_url: project.github_url || '',
                 demo_url: project.demo_url || '',
                 technologies: project.technologies ? JSON.stringify(project.technologies) : '',
@@ -63,7 +60,6 @@ export default function Projects() {
                 title: '',
                 description: '',
                 image_url: '',
-                text: '',
                 github_url: '',
                 demo_url: '',
                 technologies: '',
@@ -82,7 +78,6 @@ export default function Projects() {
             title: '',
             description: '',
             image_url: '',
-            text: '',
             github_url: '',
             demo_url: '',
             technologies: '',
@@ -121,7 +116,6 @@ export default function Projects() {
                 title: formData.title,
                 description: formData.description,
                 image_url: formData.image_url,
-                text: formData.text,
                 github_url: formData.github_url,
                 demo_url: formData.demo_url,
                 technologies: techArray,
@@ -151,7 +145,6 @@ export default function Projects() {
 
             closeModal();
 
-            // Refresh data
             const { data, error: fetchError } = await supabase
                 .from('projects')
                 .select('*')
@@ -391,9 +384,9 @@ export default function Projects() {
                                         name="description"
                                         value={formData.description}
                                         onChange={handleChange}
-                                        rows="2"
+                                        rows="4"
                                         className="w-full bg-zinc-700 border border-zinc-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-red-500 transition resize-y"
-                                        placeholder="Deskripsi project..."
+                                        placeholder="Deskripsi / detail project..."
                                     />
                                 </div>
 
@@ -419,20 +412,6 @@ export default function Projects() {
                                             />
                                         </div>
                                     )}
-                                </div>
-
-                                <div>
-                                    <label className="block text-zinc-300 text-sm font-medium mb-1">
-                                        Text / Detail
-                                    </label>
-                                    <textarea
-                                        name="text"
-                                        value={formData.text}
-                                        onChange={handleChange}
-                                        rows="3"
-                                        className="w-full bg-zinc-700 border border-zinc-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-red-500 transition resize-y"
-                                        placeholder="Konten detail project..."
-                                    />
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

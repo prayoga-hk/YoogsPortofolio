@@ -66,54 +66,38 @@ export default function Hero({ profile, settings }) {
                         duration={0.9}
                         className="order-1 lg:order-2"
                     >
-                        <div
-                            className="
-                                relative
-                                w-full
-                                max-w-[220px]
-                                sm:max-w-[260px]
-                                md:max-w-[300px]
-                                lg:max-w-none
-                                lg:ml-20
-                                mx-auto
-                            "
-                        >
-
-                            <div
-                                className="
-                                    relative
-                                    aspect-[4/5]
-                                    max-h-[70vh]
-                                    rounded-2xl
-                                "
-                            >
-                                {photoUrl ? (
-                                    <TiltedCard
-                                        imageSrc={photoUrl}
-                                        altText={name}
-                                        captionText={name}
-                                        containerHeight="90%"
-                                        containerWidth="90%"
-                                        imageHeight="90%"
-                                        imageWidth="90%"
-                                        rotateAmplitude={12}
-                                        scaleOnHover={1.05}
-                                        showMobileWarning={false}
-                                        showTooltip={true}
-                                        displayOverlayContent={false}
-                                    />
-                                ) : (
-                                    <div className="w-full h-full flex flex-col items-center justify-center gap-3 text-[#64748b] font-mono text-xs sm:text-sm px-6 text-center">
-                                        <span className="text-4xl text-[#2d3342]">
-                                            [ ]
-                                        </span>
-
-                                        <span>
-                                            Tambahkan foto gallery di /admin/profile
-                                        </span>
-                                    </div>
-                                )}
-                            </div>
+                        <div className="
+                            mx-auto
+                            w-full
+                            max-w-[220px]
+                            sm:max-w-[260px]
+                            md:max-w-[300px]
+                            lg:max-w-sm
+                            aspect-[4/5]
+                            max-h-[70vh]
+                            rounded-2xl
+                        ">
+                            {photoUrl ? (
+                                <TiltedCard
+                                    imageSrc={photoUrl}
+                                    altText={name}
+                                    captionText={name}
+                                    containerHeight="100%"
+                                    containerWidth="100%"
+                                    imageHeight="100%"
+                                    imageWidth="100%"
+                                    rotateAmplitude={12}
+                                    scaleOnHover={1.05}
+                                    showMobileWarning={false}
+                                    showTooltip={true}
+                                    displayOverlayContent={false}
+                                />
+                            ) : (
+                                <div className="w-full h-full flex flex-col items-center justify-center gap-3 text-[#64748b] font-mono text-xs sm:text-sm px-6 text-center">
+                                    <span className="text-4xl text-[#2d3342]">[ ]</span>
+                                    <span>Tambahkan foto gallery di /admin/profile</span>
+                                </div>
+                            )}
                         </div>
                     </AnimatedContent>
 

@@ -14,7 +14,6 @@ import LoadingScreen from '../components/LoadingScreen';
 
 export default function Home() {
     const [profile, setProfile] = useState(null);
-    const [skills, setSkills] = useState([]);
     const [projects, setProjects] = useState([]);
     const [educations, setEducations] = useState([]);
     const [experiences, setExperiences] = useState([]);
@@ -30,7 +29,6 @@ export default function Home() {
             try {
                 const [
                     profileRes,
-                    skillsRes,
                     projectsRes,
                     educationsRes,
                     experiencesRes,
@@ -38,7 +36,6 @@ export default function Home() {
                     settingsRes
                 ] = await Promise.all([
                     supabase.from('profiles').select('*').limit(1).single(),
-                    supabase.from('skills').select('*').eq('is_active', true).order('order_index', { ascending: true }),
                     supabase.from('projects').select('*').order('created_at', { ascending: false }),
                     supabase.from('educations').select('*').eq('published', true).order('order_index', { ascending: true }),
                     supabase.from('experiences').select('*').eq('published', true).order('order_index', { ascending: true }),
@@ -47,7 +44,6 @@ export default function Home() {
                 ]);
 
                 if (profileRes.error && profileRes.error.code !== 'PGRST116') throw profileRes.error;
-                if (skillsRes.error) throw skillsRes.error;
                 if (projectsRes.error) throw projectsRes.error;
                 if (educationsRes.error) throw educationsRes.error;
                 if (experiencesRes.error) throw experiencesRes.error;
@@ -58,7 +54,6 @@ export default function Home() {
                 console.log('PROJECTS ERROR:', projectsRes.error);
 
                 setProfile(profileRes.data);
-                setSkills(skillsRes.data || []);
                 setProjects(projectsRes.data || []);
                 setEducations(educationsRes.data || []);
                 setExperiences(experiencesRes.data || []);
@@ -94,7 +89,7 @@ export default function Home() {
                 <Navbar profile={profile} settings={settings} />
                 <Hero profile={profile} settings={settings} />
                 <About profile={profile} />
-                <Skills skills={skills} settings={settings} />
+                <Skills settings={settings} />
                 <Projects projects={projects} settings={settings} />
                 <Education educations={educations} settings={settings} />
                 <Experience experiences={experiences} settings={settings} />
