@@ -4,50 +4,33 @@ import AnimatedContent from './react-bits/AnimatedContent';
 import DecryptedText from './react-bits/DecryptedText';
 import CountUp from './react-bits/CountUp';
 
-export default function About({ profile }) {
-    console.log('ABOUT PROFILE:', profile);
+// ==================== HARDCODE DATA ====================
+const PROFILE = {
+    name: 'Prayoga',
+    about: 'Saya adalah siswa SMK jurusan Rekayasa Perangkat Lunak. Saya mulai belajar tentang programming sejak kelas 9 smp melalui salah satu video youtube, saat itu saya masih menggunakan HTML compiler online.',
+    school: 'SKARIGA',
+    major: 'RPL',
+    location: 'Malang',
+};
 
-    const name = profile?.name;
+const STATS = {
+    age: 16,
+    startYear: 2021,
+};
 
-    // =====================================================
-    // DATA FASTFETCH (Info Sistem)
-    // =====================================================
-    const fastfetchData = [
-        { label: 'OS', value: 'Fedora Linux 44 (Workstation Edition) x86_64' },
-        { label: 'Host', value: 'IdeaPad Slim 3 14IAH8' },
-        { label: 'Kernel', value: 'Linux 7.2.5-200.fc44.x86_64' },
-        { label: 'Uptime', value: '1 year ago' },
-        { label: 'Shell', value: 'zsh 5.9' },
-        { label: 'WM', value: 'Mutter (Wayland)' },
-        { label: 'Terminal', value: 'ghostty 1.3.1-4.fc44' },
-    ];
+const FASTFETCH_DATA = [
+    { label: 'OS', value: 'Fedora Linux 44 (Workstation Edition) x86_64' },
+    { label: 'Host', value: 'IdeaPad Slim 3 14IAH8' },
+    { label: 'Kernel', value: 'Linux 7.2.5-200.fc44.x86_64' },
+    { label: 'Uptime', value: '1 year ago' },
+    { label: 'Shell', value: 'zsh 5.9' },
+    { label: 'WM', value: 'Mutter (Wayland)' },
+    { label: 'Terminal', value: 'ghostty 1.3.1-4.fc44' },
+];
+// ========================================================
 
-    if (!profile) {
-        return (
-            <section
-                id="about"
-                className="
-                    scroll-mt-16
-                    h-screen
-                    min-h-0
-                    flex
-                    items-center
-                    px-4
-                    sm:px-6
-                "
-            >
-                <div className="max-w-6xl mx-auto w-full text-center">
-                    <p className="text-[#64748b] font-mono text-xs sm:text-sm text-left">
-                        // 01. TENTANG SAYA — Profil Siswa
-                    </p>
-
-                    <p className="text-[#94a3b8] mt-3 text-sm text-center">
-                        Belum ada data profile.
-                    </p>
-                </div>
-            </section>
-        );
-    }
+export default function About() {
+    const name = PROFILE.name;
 
     return (
         <section
@@ -168,12 +151,12 @@ export default function About({ profile }) {
                                             {/* Info Sistem (Kanan) */}
                                             <div className="flex-1">
                                                 <p className="m-0 text-white font-bold">
-                                                    {name?.toLowerCase().split(' ')[0] || 'prayoga'}@fedora
+                                                    {name.toLowerCase().split(' ')[0]}@fedora
                                                 </p>
                                                 <p className="m-0 text-[#64748b] mb-2">
                                                     ------------------
                                                 </p>
-                                                {fastfetchData.map((item, i) => (
+                                                {FASTFETCH_DATA.map((item, i) => (
                                                     <p key={i} className="m-0">
                                                         <span className="text-[#ef4444] font-bold">{item.label}:</span>{' '}
                                                         <span className="text-[#94a3b8]">{item.value}</span>
@@ -263,41 +246,24 @@ export default function About({ profile }) {
                             duration={0.7}
                             className="w-full"
                         >
-                            {profile.about ? (
-                                <p
-                                    className="
-                                        text-[#94a3b8]
-                                        leading-relaxed
-                                        text-xs
-                                        sm:text-sm
-                                        md:text-base
-                                        lg:text-lg
-                                        mb-2
-                                        sm:mb-4
-                                        w-full
-                                        max-w-2xl
-                                        text-center
-                                        mx-auto
-                                    "
-                                >
-                                    {profile.about}
-                                </p>
-                            ) : (
-                                <p
-                                    className="
-                                        text-[#64748b]
-                                        italic
-                                        text-xs
-                                        sm:text-sm
-                                        mb-2
-                                        sm:mb-4
-                                        text-center
-                                        w-full
-                                    "
-                                >
-                                    Belum ada deskripsi. Tambahkan di admin panel.
-                                </p>
-                            )}
+                            <p
+                                className="
+                                    text-[#94a3b8]
+                                    leading-relaxed
+                                    text-xs
+                                    sm:text-sm
+                                    md:text-base
+                                    lg:text-lg
+                                    mb-2
+                                    sm:mb-4
+                                    w-full
+                                    max-w-2xl
+                                    text-center
+                                    mx-auto
+                                "
+                            >
+                                {PROFILE.about}
+                            </p>
                         </AnimatedContent>
 
                         {/* ================= META ================= */}
@@ -319,21 +285,21 @@ export default function About({ profile }) {
                                     w-full
                                 "
                             >
-                                {profile.school && (
+                                {PROFILE.school && (
                                     <span className="px-2 py-1 sm:px-3 sm:py-1.5 bg-[#181c24] border border-[#2d3342] rounded text-[9px] sm:text-xs text-[#94a3b8] font-mono">
-                                        {profile.school}
+                                        {PROFILE.school}
                                     </span>
                                 )}
 
-                                {profile.major && (
+                                {PROFILE.major && (
                                     <span className="px-2 py-1 sm:px-3 sm:py-1.5 bg-[#181c24] border border-[#2d3342] rounded text-[9px] sm:text-xs text-[#94a3b8] font-mono">
-                                        {profile.major}
+                                        {PROFILE.major}
                                     </span>
                                 )}
 
-                                {profile.location && (
+                                {PROFILE.location && (
                                     <span className="px-2 py-1 sm:px-3 sm:py-1.5 bg-[#181c24] border border-[#2d3342] rounded text-[9px] sm:text-xs text-[#94a3b8] font-mono">
-                                        {profile.location}
+                                        {PROFILE.location}
                                     </span>
                                 )}
                             </div>
@@ -360,7 +326,7 @@ export default function About({ profile }) {
                                 {/* Usia */}
                                 <div className="bg-[#0f131c] border border-[#2d3342] rounded-md p-2 sm:p-3 text-center">
                                     <p className="text-base sm:text-2xl font-bold text-white font-mono">
-                                        <CountUp to={16} duration={1.5} />
+                                        <CountUp to={STATS.age} duration={1.5} />
                                     </p>
                                     <p className="text-[8px] sm:text-[10px] uppercase tracking-wider text-[#64748b] font-mono mt-0.5 sm:mt-1">
                                         Usia
@@ -370,7 +336,7 @@ export default function About({ profile }) {
                                 {/* Mulai */}
                                 <div className="bg-[#0f131c] border border-[#2d3342] rounded-md p-2 sm:p-3 text-center">
                                     <p className="text-base sm:text-2xl font-bold text-white font-mono">
-                                        <CountUp to={2021} duration={1.8} separator="" />
+                                        <CountUp to={STATS.startYear} duration={1.8} separator="" />
                                     </p>
                                     <p className="text-[8px] sm:text-[10px] uppercase tracking-wider text-[#64748b] font-mono mt-0.5 sm:mt-1">
                                         Mulai

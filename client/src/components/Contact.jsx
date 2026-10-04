@@ -2,13 +2,38 @@ import FadeContent from './react-bits/FadeContent';
 import AnimatedContent from './react-bits/AnimatedContent';
 import BlurText from './react-bits/BlurText';
 import SpotlightCard from './react-bits/SpotlightCard';
+import { SiGithub, SiInstagram } from 'react-icons/si';
+
+// ==================== HARDCODE DATA ====================
+const CONTACT = {
+    email: 'prayogahk26@gmail.com', // ← GANTI dengan email asli kamu
+};
+
+const ACCENT_COLOR = '#ef4444';
+
+const SOCIAL_LINKS = [
+    {
+        id: 1,
+        platform: 'GitHub',
+        username: 'prayoga-hk',
+        url: 'https://github.com/prayoga-hk',
+        icon: SiGithub,
+    },
+    {
+        id: 2,
+        platform: 'Instagram',
+        username: 'pryg_266',
+        url: 'https://instagram.com/pryg_266',
+        icon: SiInstagram,
+    },
+];
+// ========================================================
 
 const SECTION =
     'scroll-mt-16 min-h-screen flex items-center px-6 pt-20 pb-20';
 
-export default function Contact({ socialLinks, settings, profile }) {
-    const email = profile?.email || settings?.contact_email || '';
-    const accentColor = settings?.accent_color || '#ef4444';
+export default function Contact() {
+    const email = CONTACT.email;
 
     return (
         <section id="contact" className={SECTION}>
@@ -41,24 +66,28 @@ export default function Contact({ socialLinks, settings, profile }) {
                                 </SpotlightCard>
                             )}
 
-                            {socialLinks && socialLinks.length > 0 && (
+                            {SOCIAL_LINKS.length > 0 && (
                                 <SpotlightCard
                                     className="!rounded-md !border-[#2d3342] !bg-[#0f131c] !p-6"
                                     spotlightColor="rgba(239, 68, 68, 0.2)"
                                 >
                                     <p className="relative z-10 text-[#64748b] text-sm font-mono mb-3">Social</p>
                                     <div className="relative z-10 flex flex-wrap gap-2">
-                                        {socialLinks.map((link) => (
-                                            <a
-                                                key={link.id}
-                                                href={link.url}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="inline-block px-4 py-2 bg-[#181c24] border border-[#2d3342] rounded text-[#94a3b8] hover:text-white hover:border-[#ef4444] transition text-sm font-mono"
-                                            >
-                                                {link.platform}
-                                            </a>
-                                        ))}
+                                        {SOCIAL_LINKS.map((link) => {
+                                            const Icon = link.icon;
+                                            return (
+                                                <a
+                                                    key={link.id}
+                                                    href={link.url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center gap-2 px-4 py-2 bg-[#181c24] border border-[#2d3342] rounded text-[#94a3b8] hover:text-white hover:border-[#ef4444] transition text-sm font-mono"
+                                                >
+                                                    {Icon && <Icon className="w-4 h-4" />}
+                                                    {link.platform}
+                                                </a>
+                                            );
+                                        })}
                                     </div>
                                 </SpotlightCard>
                             )}
@@ -77,12 +106,26 @@ export default function Contact({ socialLinks, settings, profile }) {
                                 <p className="text-[#94a3b8] mb-4">
                                     <span className="text-[#ef4444]">└─</span> <span className="text-white">$</span> ./send_message.sh
                                 </p>
-                                <form className="space-y-4 flex-1 flex flex-col">
+
+                                {/* ================= FORM ================= */}
+                                <form
+                                    action={`https://formsubmit.co/${email}`}
+                                    method="POST"
+                                    className="space-y-4 flex-1 flex flex-col"
+                                >
+                                    {/* ===== Konfigurasi FormSubmit (hidden) ===== */}
+                                    <input type="hidden" name="_subject" value="New message from portfolio" />
+                                    <input type="hidden" name="_captcha" value="false" />
+                                    <input type="hidden" name="_template" value="table" />
+                                    <input type="text" name="_honey" style={{ display: 'none' }} />
+
                                     <div>
                                         <label className="text-[#64748b] text-xs block mb-1.5">Nama Pengirim</label>
                                         <input
                                             type="text"
+                                            name="name"
                                             placeholder="your_name"
+                                            required
                                             className="w-full bg-[#0a0e16] border border-[#2d3342] rounded px-4 py-2.5 text-white text-sm focus:border-[#ef4444] outline-none transition"
                                         />
                                     </div>
@@ -90,26 +133,31 @@ export default function Contact({ socialLinks, settings, profile }) {
                                         <label className="text-[#64748b] text-xs block mb-1.5">Email</label>
                                         <input
                                             type="email"
+                                            name="email"
                                             placeholder="email@domain.com"
+                                            required
                                             className="w-full bg-[#0a0e16] border border-[#2d3342] rounded px-4 py-2.5 text-white text-sm focus:border-[#ef4444] outline-none transition"
                                         />
                                     </div>
                                     <div className="flex-1 flex flex-col">
                                         <label className="text-[#64748b] text-xs block mb-1.5">Pesan</label>
                                         <textarea
+                                            name="message"
                                             rows="6"
                                             placeholder="Tulis pesan Anda..."
+                                            required
                                             className="w-full flex-1 bg-[#0a0e16] border border-[#2d3342] rounded px-4 py-2.5 text-white text-sm focus:border-[#ef4444] outline-none transition resize-none"
                                         ></textarea>
                                     </div>
                                     <button
                                         type="submit"
                                         className="w-full py-3 text-white rounded font-mono text-sm hover:opacity-80 transition"
-                                        style={{ backgroundColor: accentColor }}
+                                        style={{ backgroundColor: ACCENT_COLOR }}
                                     >
                                         KIRIM PESAN [&gt;]
                                     </button>
                                 </form>
+                                {/* ================ END FORM ================ */}
                             </div>
                         </div>
                     </AnimatedContent>

@@ -3,12 +3,22 @@ import AnimatedContent from './react-bits/AnimatedContent';
 import Magnet from './react-bits/Magnet';
 import DotGrid from './react-bits/DotGrid';
 import TiltedCard from './react-bits/TiltedCard';
-import { resolvePrimaryPhoto } from './PhotoCarousel';
 
-export default function Hero({ profile, settings }) {
-    const accentColor = settings?.accent_color || '#ef4444';
-    const name = profile?.name || 'Ahmad Rizky Pratama';
-    const photoUrl = resolvePrimaryPhoto(profile);
+// ==================== HARDCODE DATA ====================
+// Kalau mau lebih rapi, pindahkan ke src/data/profile.js
+const PROFILE = {
+    name: 'Prayoga Husnul Khitam',
+    photo: '/images/profile/profile.jpeg',
+    githubUrl: 'https://github.com/prayoga-hk',
+    tags: ['#Student', '#Tech Enthusiast', '#Programmer'],
+};
+
+const ACCENT_COLOR = '#ef4444';
+// ========================================================
+
+export default function Hero() {
+    const name = PROFILE.name;
+    const photoUrl = PROFILE.photo;
 
     return (
         <section
@@ -25,25 +35,23 @@ export default function Hero({ profile, settings }) {
                 bg-[#0a0e16]
                 overflow-hidden
             "
-      >
-
-        {/* ================= DOTFIELD BACKGROUND ================= */}
-        <div className="absolute inset-0 z-0 pointer-events-none">
-            <DotGrid
-            dotSize={4}
-                gap={16}
-                baseColor="#1e293b"
-                activeColor="#ef4444"
-                proximity={120}
-                shockRadius={200}
-                shockStrength={4}
-                resistance={750}
-                returnDuration={1.5}
-            />
-        </div>
+        >
+            {/* ================= DOTFIELD BACKGROUND ================= */}
+            <div className="absolute inset-0 z-0 pointer-events-none">
+                <DotGrid
+                    dotSize={4}
+                    gap={16}
+                    baseColor="#1e293b"
+                    activeColor="#ef4444"
+                    proximity={120}
+                    shockRadius={200}
+                    shockStrength={4}
+                    resistance={750}
+                    returnDuration={1.5}
+                />
+            </div>
 
             <div className="relative z-10 max-w-6xl mx-auto w-full h-full flex items-center">
-
                 <div
                     className="
                         w-full
@@ -57,7 +65,6 @@ export default function Hero({ profile, settings }) {
                         max-h-full
                     "
                 >
-
                     {/* ================= PHOTO ================= */}
                     <AnimatedContent
                         distance={50}
@@ -95,7 +102,7 @@ export default function Hero({ profile, settings }) {
                             ) : (
                                 <div className="w-full h-full flex flex-col items-center justify-center gap-3 text-[#64748b] font-mono text-xs sm:text-sm px-6 text-center">
                                     <span className="text-4xl text-[#2d3342]">[ ]</span>
-                                    <span>Tambahkan foto gallery di /admin/profile</span>
+                                    <span>foto tidak ditemukan</span>
                                 </div>
                             )}
                         </div>
@@ -114,7 +121,6 @@ export default function Hero({ profile, settings }) {
                             lg:items-start
                         "
                     >
-
                         {/* NAME */}
                         <BlurText
                             text={name}
@@ -152,61 +158,23 @@ export default function Hero({ profile, settings }) {
                                     lg:mb-6
                                 "
                             >
-                                <span className="
-                                    px-2
-                                    py-1
-                                    sm:px-2.5
-                                    sm:py-1
-                                    bg-[#181c24]
-                                    border
-                                    border-[#2d3342]
-                                    rounded
-                                    text-[9px]
-                                    sm:text-[11px]
-                                    lg:text-xs
-                                    text-[#94a3b8]
-                                    font-mono
-                                ">
-                                    #Student
-                                </span>
-
-                                <span className="
-                                    px-2
-                                    py-1
-                                    sm:px-2.5
-                                    sm:py-1
-                                    bg-[#181c24]
-                                    border
-                                    border-[#2d3342]
-                                    rounded
-                                    text-[9px]
-                                    sm:text-[11px]
-                                    lg:text-xs
-                                    text-[#94a3b8]
-                                    font-mono
-                                ">
-                                    #Tech Enthusiast
-                                </span>
-
-                                <span className="
-                                    hidden
-                                    sm:inline-block
-                                    px-2
-                                    py-1
-                                    sm:px-2.5
-                                    sm:py-1
-                                    bg-[#181c24]
-                                    border
-                                    border-[#2d3342]
-                                    rounded
-                                    text-[9px]
-                                    sm:text-[11px]
-                                    lg:text-xs
-                                    text-[#94a3b8]
-                                    font-mono
-                                ">
-                                    #Programmer
-                                </span>
+                                {PROFILE.tags.map((tag, i) => (
+                                    <span
+                                        key={tag}
+                                        className={`
+                                            px-2 py-1 sm:px-2.5 sm:py-1
+                                            bg-[#181c24]
+                                            border border-[#2d3342]
+                                            rounded
+                                            text-[9px] sm:text-[11px] lg:text-xs
+                                            text-[#94a3b8]
+                                            font-mono
+                                            ${i === 2 ? 'hidden sm:inline-block' : ''}
+                                        `}
+                                    >
+                                        {tag}
+                                    </span>
+                                ))}
                             </div>
                         </AnimatedContent>
 
@@ -227,61 +195,40 @@ export default function Hero({ profile, settings }) {
                                     lg:gap-4
                                 "
                             >
-
                                 {/* PROJECT BUTTON */}
-                                <Magnet
-                                    padding={25}
-                                    magnetStrength={2}
-                                >
+                                <Magnet padding={25} magnetStrength={2}>
                                     <a
-                                        href="https://github.com/prayoga-hk"
+                                        href={PROFILE.githubUrl}
                                         className="
                                             inline-block
-                                            px-3.5
-                                            sm:px-4
-                                            lg:px-6
-                                            py-2
-                                            sm:py-2.5
-                                            lg:py-3
+                                            px-3.5 sm:px-4 lg:px-6
+                                            py-2 sm:py-2.5 lg:py-3
                                             rounded
                                             text-white
-                                            text-xs
-                                            sm:text-sm
-                                            lg:text-base
+                                            text-xs sm:text-sm lg:text-base
                                             font-mono
                                             transition
                                             hover:opacity-80
                                         "
-                                        style={{
-                                            backgroundColor: accentColor
-                                        }}
+                                        style={{ backgroundColor: ACCENT_COLOR }}
                                     >
                                         [&gt;] Lihat Proyek
                                     </a>
                                 </Magnet>
 
                                 {/* CONTACT BUTTON */}
-                                <Magnet
-                                    padding={25}
-                                    magnetStrength={2}
-                                >
+                                <Magnet padding={25} magnetStrength={2}>
                                     <a
                                         href="#contact"
                                         className="
                                             inline-block
-                                            px-3.5
-                                            sm:px-4
-                                            lg:px-6
-                                            py-2
-                                            sm:py-2.5
-                                            lg:py-3
+                                            px-3.5 sm:px-4 lg:px-6
+                                            py-2 sm:py-2.5 lg:py-3
                                             rounded
                                             border
                                             border-[#2d3342]
                                             text-white
-                                            text-xs
-                                            sm:text-sm
-                                            lg:text-base
+                                            text-xs sm:text-sm lg:text-base
                                             font-mono
                                             hover:bg-[#181c24]
                                             transition
@@ -290,12 +237,9 @@ export default function Hero({ profile, settings }) {
                                         [#] Hubungi Saya
                                     </a>
                                 </Magnet>
-
                             </div>
                         </AnimatedContent>
-
                     </div>
-
                 </div>
             </div>
         </section>
