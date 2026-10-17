@@ -3,6 +3,24 @@
 @theme {
   --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-pixel: "Press Start 2P", ui-monospace, monospace;
+
+  --animate-scan-x: scan-x 0.3s ease-out 1 forwards;
+  --animate-blink: blink 1s step-end infinite;
+
+  @keyframes scan-x {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
 }
 
 body {
@@ -16,7 +34,6 @@ body {
   }
 }
 
-/* Hide scrollbar for the mobile nav pill bar, without hiding functionality */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }

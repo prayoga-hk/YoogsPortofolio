@@ -1,246 +1,104 @@
-import BlurText from './react-bits/BlurText';
-import AnimatedContent from './react-bits/AnimatedContent';
-import Magnet from './react-bits/Magnet';
-import DotGrid from './react-bits/DotGrid';
-import TiltedCard from './react-bits/TiltedCard';
+import { motion, useReducedMotion } from 'motion/react';
+import { FaDownload } from 'react-icons/fa6';
+import FaultyTerminal from './react-bits/FaultyTerminal';
 
-// ==================== HARDCODE DATA ====================
-// Kalau mau lebih rapi, pindahkan ke src/data/profile.js
-const PROFILE = {
-    name: 'Prayoga Husnul Khitam',
-    photo: '/images/profile/profile.jpeg',
-    githubUrl: 'https://github.com/prayoga-hk',
-    tags: ['#Student', '#Tech Enthusiast', '#Programmer'],
-};
+// ==================== KONFIGURASI ====================
+const ACCENT_COLOR = '#F85149';
+const NAME = 'PRAYOGA';
+const SUBTITLE =
+    'I am a software engineering student who is still learning and developing my skills.';
+const RESUME_URL = '#';
 
-const ACCENT_COLOR = '#ef4444';
-// ========================================================
+const TERMINAL_OPACITY = 0.85;
+const PIXEL_STEPS = 8;
+const pixelEase = (t) =>
+    Math.min(1, Math.floor(t * PIXEL_STEPS) / (PIXEL_STEPS - 1));
+// =====================================================
 
 export default function Hero() {
-    const name = PROFILE.name;
-    const photoUrl = PROFILE.photo;
+    const reduceMotion = useReducedMotion();
+    const hasResume = RESUME_URL !== '#';
 
     return (
         <section
             id="home"
-            className="
-                scroll-mt-16
-                relative
-                h-screen
-                min-h-0
-                flex
-                items-center
-                px-4
-                sm:px-6
-                bg-[#0a0e16]
-                overflow-hidden
-            "
-        >
-            {/* ================= DOTFIELD BACKGROUND ================= */}
-            <div className="absolute inset-0 z-0 pointer-events-none">
-                <DotGrid
-                    dotSize={4}
-                    gap={16}
-                    baseColor="#1e293b"
-                    activeColor="#ef4444"
-                    proximity={120}
-                    shockRadius={200}
-                    shockStrength={4}
-                    resistance={750}
-                    returnDuration={1.5}
-                />
+            className="relative flex min-h-screen scroll-mt-16 items-center justify-center overflow-hidden bg-[#090D16] px-4 pt-16"
+      >
+        <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 z-0"
+                style={{ opacity: TERMINAL_OPACITY }}
+            >
+              <FaultyTerminal
+                  scale={3.1}
+                  gridMul={[2, 1]}
+                  digitSize={2.5}
+                  timeScale={0.5}
+                  scanlineIntensity={0.5}
+                  glitchAmount={3}
+                  flickerAmount={1.5}
+                  noiseAmp={0.8}
+                  curvature={0.34}
+                  tint={ACCENT_COLOR}
+                  mouseReact
+                  mouseStrength={0.4}
+                  pageLoadAnimation
+                  brightness={0.4}
+              />
             </div>
 
-            <div className="relative z-10 max-w-6xl mx-auto w-full h-full flex items-center">
-                <div
-                    className="
-                        w-full
-                        grid
-                        grid-cols-1
-                        lg:grid-cols-2
-                        gap-4
-                        sm:gap-6
-                        lg:gap-12
-                        items-center
-                        max-h-full
-                    "
+            <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,rgba(9,13,22,0.6)_0%,rgba(9,13,22,0.1)_75%)]"
+            />
+
+            <div className="relative z-10 flex flex-col items-center text-center">
+                <motion.h1
+                    className="select-none font-pixel leading-none text-white"
+                    style={{ fontSize: 'clamp(1.5rem, 9vw, 6.5rem)' }}
+                    initial={
+                        reduceMotion ? false : { clipPath: 'inset(100% 0% 0% 0%)' }
+                    }
+                    animate={{ clipPath: 'inset(0% 0% 0% 0%)' }}
+                    transition={{ duration: 1.2, ease: pixelEase, delay: 0.2 }}
                 >
-                    {/* ================= PHOTO ================= */}
-                    <AnimatedContent
-                        distance={50}
-                        direction="horizontal"
-                        delay={0.15}
-                        duration={0.9}
-                        className="order-1 lg:order-2"
+                    {NAME}
+                </motion.h1>
+
+                <motion.p
+                    className="mt-8 max-w-xl font-mono text-sm text-white/90 sm:text-lg"
+                    initial={reduceMotion ? false : { opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.6, delay: 1.3 }}
+                >
+                    {SUBTITLE}
+                </motion.p>
+
+                <motion.div
+                    className="mt-8 flex flex-wrap items-center justify-center gap-4 sm:gap-8"
+                    initial={reduceMotion ? false : { opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.6, delay: 1.5 }}
+                >
+                    <a
+                        href={RESUME_URL}
+                        {...(hasResume
+                            ? { download: true, target: '_blank', rel: 'noreferrer' }
+                            : {})}
+                        className="inline-flex items-center gap-2 border-2 border-[#F85149] px-5 py-2 font-mono text-lg text-white transition-colors duration-200 hover:bg-[#F85149]/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                     >
-                        <div className="
-                            mx-auto
-                            w-full
-                            max-w-[220px]
-                            sm:max-w-[260px]
-                            md:max-w-[300px]
-                            lg:max-w-sm
-                            aspect-[4/5]
-                            max-h-[70vh]
-                            rounded-2xl
-                        ">
-                            {photoUrl ? (
-                                <TiltedCard
-                                    imageSrc={photoUrl}
-                                    altText={name}
-                                    captionText={name}
-                                    containerHeight="100%"
-                                    containerWidth="100%"
-                                    imageHeight="100%"
-                                    imageWidth="100%"
-                                    rotateAmplitude={12}
-                                    scaleOnHover={1.05}
-                                    showMobileWarning={false}
-                                    showTooltip={true}
-                                    displayOverlayContent={false}
-                                />
-                            ) : (
-                                <div className="w-full h-full flex flex-col items-center justify-center gap-3 text-[#64748b] font-mono text-xs sm:text-sm px-6 text-center">
-                                    <span className="text-4xl text-[#2d3342]">[ ]</span>
-                                    <span>foto tidak ditemukan</span>
-                                </div>
-                            )}
-                        </div>
-                    </AnimatedContent>
+                        <FaDownload aria-hidden="true" className="size-4" />
+                        RESUME
+                    </a>
 
-                    {/* ================= TEXT ================= */}
-                    <div
-                        className="
-                            order-2
-                            lg:order-1
-                            text-center
-                            lg:text-left
-                            flex
-                            flex-col
-                            items-center
-                            lg:items-start
-                        "
+                    <a
+                        href="#contact"
+                        className="inline-flex items-center gap-1 border-2 border-[#F85149] bg-[#F85149] px-5 py-2 font-mono text-lg text-white transition-[filter] duration-200 hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                     >
-                        {/* NAME */}
-                        <BlurText
-                            text={name}
-                            delay={60}
-                            animateBy="words"
-                            direction="top"
-                            className="
-                                text-2xl
-                                sm:text-4xl
-                                md:text-5xl
-                                lg:text-7xl
-                                font-bold
-                                text-white
-                                mb-1
-                                sm:mb-2
-                            "
-                        />
-
-                        {/* TAGS */}
-                        <AnimatedContent
-                            distance={15}
-                            delay={0.3}
-                            duration={0.6}
-                        >
-                            <div
-                                className="
-                                    flex
-                                    flex-wrap
-                                    justify-center
-                                    lg:justify-start
-                                    gap-1.5
-                                    sm:gap-2
-                                    mb-3
-                                    sm:mb-4
-                                    lg:mb-6
-                                "
-                            >
-                                {PROFILE.tags.map((tag, i) => (
-                                    <span
-                                        key={tag}
-                                        className={`
-                                            px-2 py-1 sm:px-2.5 sm:py-1
-                                            bg-[#181c24]
-                                            border border-[#2d3342]
-                                            rounded
-                                            text-[9px] sm:text-[11px] lg:text-xs
-                                            text-[#94a3b8]
-                                            font-mono
-                                            ${i === 2 ? 'hidden sm:inline-block' : ''}
-                                        `}
-                                    >
-                                        {tag}
-                                    </span>
-                                ))}
-                            </div>
-                        </AnimatedContent>
-
-                        {/* BUTTONS */}
-                        <AnimatedContent
-                            distance={15}
-                            delay={0.4}
-                            duration={0.6}
-                        >
-                            <div
-                                className="
-                                    flex
-                                    flex-wrap
-                                    justify-center
-                                    lg:justify-start
-                                    gap-2
-                                    sm:gap-3
-                                    lg:gap-4
-                                "
-                            >
-                                {/* PROJECT BUTTON */}
-                                <Magnet padding={25} magnetStrength={2}>
-                                    <a
-                                        href={PROFILE.githubUrl}
-                                        className="
-                                            inline-block
-                                            px-3.5 sm:px-4 lg:px-6
-                                            py-2 sm:py-2.5 lg:py-3
-                                            rounded
-                                            text-white
-                                            text-xs sm:text-sm lg:text-base
-                                            font-mono
-                                            transition
-                                            hover:opacity-80
-                                        "
-                                        style={{ backgroundColor: ACCENT_COLOR }}
-                                    >
-                                        [&gt;] Lihat Proyek
-                                    </a>
-                                </Magnet>
-
-                                {/* CONTACT BUTTON */}
-                                <Magnet padding={25} magnetStrength={2}>
-                                    <a
-                                        href="#contact"
-                                        className="
-                                            inline-block
-                                            px-3.5 sm:px-4 lg:px-6
-                                            py-2 sm:py-2.5 lg:py-3
-                                            rounded
-                                            border
-                                            border-[#2d3342]
-                                            text-white
-                                            text-xs sm:text-sm lg:text-base
-                                            font-mono
-                                            hover:bg-[#181c24]
-                                            transition
-                                        "
-                                    >
-                                        [#] Hubungi Saya
-                                    </a>
-                                </Magnet>
-                            </div>
-                        </AnimatedContent>
-                    </div>
-                </div>
+                        <span aria-hidden="true">&gt;</span>
+                        CONTACT
+                    </a>
+                </motion.div>
             </div>
         </section>
     );

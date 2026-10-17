@@ -1,135 +1,73 @@
-import FadeContent from './react-bits/FadeContent';
-import BlurText from './react-bits/BlurText';
-import ChromaGrid from './react-bits/ChromaGrid';
+import { FaCss3 } from 'react-icons/fa';
+import { VscVscode } from 'react-icons/vsc';
+import {
+    SiHtml5,
+    SiJavascript,
+    SiPhp,
+    SiAndroidstudio,
+    SiZedindustries,
+} from 'react-icons/si';
 
-const SECTION =
-    'scroll-mt-16 min-h-screen flex items-center px-4 sm:px-6 pt-16 pb-8 bg-[#0a0e16]';
-
-// =====================================================
-// DATA SKILL STATIS (TANPA DATABASE)
-// =====================================================
-// Silakan sesuaikan nama, kategori, dan path gambarnya
 const SKILLS_DATA = [
-    {
-        id: 1,
-        name: 'Laravel',
-        category: 'Backend',
-        image: '/images/skill/laravel.svg',
-    },
-    {
-        id: 2,
-        name: 'Bootstrap',
-        category: 'Frontend',
-        image: '/images/skill/bootstrap.svg',
-    },
-    {
-        id: 3,
-        name: 'React.js',
-        category: 'Frontend',
-        image: '/images/skill/react.svg',
-    },
-    {
-        id: 4,
-        name: 'Tailwind CSS',
-        category: 'Frontend',
-        image: '/images/skill/tailwind.svg',
-    },
-    {
-        id: 5,
-        name: 'Java',
-        category: 'Backend',
-        image: '/images/skill/java.svg',
-    },
-    {
-        id: 6,
-        name: 'MySQL',
-        category: 'Database',
-        image: '/images/skill/mysql.svg',
-    },
-    {
-        id: 7,
-        name: 'Git',
-        category: 'Tools',
-        image: '/images/skill/git.svg',
-    },
-    {
-        id: 8,
-        name: 'Figma',
-        category: 'Tools',
-        image: '/images/skill/figma.svg',
-    },
-    {
-        id: 9,
-        name: 'Fedora',
-        category: 'OS',
-        image: '/images/skill/fedora.svg',
-    },
-    {
-        id: 10,
-        name: 'Windows',
-        category: 'OS',
-        image: '/images/skill/windows.svg',
-    },
+    { name: 'HTML', category: 'Frontend', image: '/images/skill/HTML5.svg', color: '#E34F26' },
+    { name: 'CSS', category: 'Frontend', image: '/images/skill/CSS3.svg', color: '#1572B6' },
+    { name: 'JavaScript', category: 'Frontend', image: './images/skill/JavaScript.svg', color: '#F7DF1E' },
+    { name: 'PHP', category: 'Backend', image: '/images/skill/PHP.svg', color: '#777BB4' },
+    { name: 'Java', category: 'Backend', image: '/images/skill/java.svg' },
+    { name: 'Bootstrap', category: 'Frontend', image: '/images/skill/bootstrap.svg' },
+    { name: 'Tailwind CSS', category: 'Frontend', image: '/images/skill/tailwind.svg' },
+    { name: 'React', category: 'Frontend', image: '/images/skill/react.svg' },
+    { name: 'Laravel', category: 'Backend', image: '/images/skill/laravel.svg' },
+    { name: 'MySQL', category: 'Database', image: '/images/skill/mysql.svg' },
+    { name: 'XAMPP', category: 'Local Server Testing', image: '/images/skill/xampp.svg' },
+    { name: 'VS Code', category: 'Code Editor', image: '/images/skill/VSCode.svg', color: '#007ACC' },
+    { name: 'Zed', category: 'Code Editor', Icon: SiZedindustries, color: '#FFFFFF' },
+    { name: 'Android Studio', category: 'Code Editor', image: '/images/skill/AndroidStudio.svg', color: '#3DDC84' },
+    { name: 'Figma', category: 'Design Tools', image: '/images/skill/figma.svg' },
 ];
 
-export default function Skills() {
-    const accentColor = '#ef4444'; // Warna aksen merah statis
-
-    // =====================================================
-    // MAPPING DATA SKILL KE FORMAT CHROMAGRID
-    // =====================================================
-    const gridItems = SKILLS_DATA.map((skill) => ({
-        image: skill.image,
-        title: skill.name,
-        subtitle: skill.category,
-        handle: '',
-        borderColor: accentColor,
-        gradient: 'linear-gradient(145deg, #1e293b, #0f172a)',
-        url: '#',
-    }));
-
+export default function Skills({ settings }) {
     return (
-        <section id="skills" className={SECTION}>
-            <div className="max-w-6xl mx-auto w-full h-full flex flex-col justify-center">
+        <section
+            id="skills"
+            className="flex min-h-screen scroll-mt-16 flex-col justify-center bg-[#090D16] px-4 py-24 sm:px-8"
+        >
 
-                {/* =================================================
-                    HEADER
-                ================================================= */}
-                <div className="mb-6 sm:mb-8">
-                    <FadeContent blur duration={700} threshold={0.1}>
-                        <p className="text-[#ef4444] font-mono text-xs sm:text-sm mb-2">
-                            // 02. KEAHLIAN & TECH STACK
-                        </p>
-                    </FadeContent>
+          <div className="mx-auto w-full lg:w-[74%]">
+                <h2 className="text-center font-mono text-6xl font-semibold  text-[#F85149] md:text-6xl font-semibold">
+                    My Skill &amp; Tool
+                </h2>
 
-                    <BlurText
-                        text="Keahlian & Tech Stack"
-                        delay={70}
-                        animateBy="words"
-                        className="
-                            text-3xl
-                            sm:text-4xl
-                            lg:text-5xl
-                            font-bold
-                            text-white
-                        "
-                    />
-                </div>
-
-                {/* =================================================
-                    CHROMAGRID SECTION
-                ================================================= */}
-                <div className="w-full flex-1 flex items-center justify-center">
-                    <ChromaGrid
-                        items={gridItems}
-                        columns={4} // 4 kolom untuk 8 skill (2 baris)
-                        radius={300}
-                        damping={0.45}
-                        fadeOut={0.6}
-                        className="w-full"
-                    />
-                </div>
-
+                <ul className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {SKILLS_DATA.map((skill) => (
+                        <li
+                            key={skill.name}
+                            className="flex items-center gap-4 border border-[#F85149] px-4 py-3"
+                        >
+                            {skill.image ? (
+                                <img
+                                    src={skill.image}
+                                    alt=""
+                                    aria-hidden="true"
+                                    loading="lazy"
+                                    className="size-10 shrink-0 object-contain"
+                                />
+                            ) : (
+                                <skill.Icon
+                                    aria-hidden="true"
+                                    className="size-10 shrink-0"
+                                    style={{ color: skill.color }}
+                                />
+                            )}
+                            <div className="min-w-0 font-mono">
+                                <p className="truncate text-lg text-white">{skill.name}</p>
+                                <p className="truncate text-sm text-white/80">
+                                    [{skill.category}]
+                                </p>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
             </div>
         </section>
     );

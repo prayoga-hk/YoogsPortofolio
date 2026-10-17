@@ -1,5 +1,6 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, User, Code, FolderGit2, GraduationCap, Briefcase, Share2, Settings, LogOut } from 'lucide-react'
+// Hapus GraduationCap dan Briefcase, tambahkan History (atau Clock)
+import { LayoutDashboard, User, Code, FolderGit2, History, Share2, Settings, LogOut } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 
 function AdminLayout() {
@@ -32,15 +33,11 @@ function AdminLayout() {
       path: '/admin/projects',
       icon: FolderGit2,
     },
+    // UBAH BAGIAN INI: Education & Experience menjadi Timeline
     {
-      name: 'Education',
-      path: '/admin/education',
-      icon: GraduationCap,
-    },
-    {
-      name: 'Experience',
-      path: '/admin/experience',
-      icon: Briefcase,
+      name: 'Timeline (CV)',
+      path: '/admin/timeline',
+      icon: History,
     },
     {
       name: 'Social Links',

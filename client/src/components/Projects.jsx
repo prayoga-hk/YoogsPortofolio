@@ -1,137 +1,118 @@
-import FadeContent from './react-bits/FadeContent';
-import AnimatedContent from './react-bits/AnimatedContent';
-import SpotlightCard from './react-bits/SpotlightCard';
-import BlurText from './react-bits/BlurText';
-import Magnet from './react-bits/Magnet';
+import { useCallback, useState } from 'react';
+import { AnimatePresence } from 'motion/react';
+import ScanLine from './ScanLine';
+import ProjectModal from './ProjectModal';
 
 const SECTION =
-  'scroll-mt-16 min-h-screen flex items-start px-6 pt-20 pb-10 bg-[#0a0e16]';
-export default function Projects({ projects, settings }) {
-    const accentColor = settings?.accent_color || '#ef4444';
-    const spotlight = 'rgba(239, 68, 68, 0.2)';
+    'flex min-h-screen scroll-mt-16 flex-col justify-center bg-[#090D16] px-4 py-24 sm:px-8';
 
-    console.log('PROJECTS DATA:', projects);
+function normalizeProject(project) {
+    const rawTech = project.tech ?? project.technologies ?? project.tech_stack;
+    let tech = [];
+    if (Array.isArray(rawTech)) tech = rawTech;
+    else if (typeof rawTech === 'string') {
+        tech = rawTech.split(',').map((t) => t.trim()).filter(Boolean);
+    }
+
+    return {
+        id: project.id,
+        title: project.title,
+        description: project.description,
+        longDescription:
+            project.longDescription ??
+            project.long_description ??
+            project.content ??
+            project.description,
+        tech,
+        demo_url: project.demo_url ?? project.live_url,
+        github_url: project.github_url,
+        published: project.published,
+        image_url: project.image_url,
+    };
+}
+
+export default function Projects({ projects, settings }) {
+    const [selected, setSelected] = useState(null);
+    const handleClose = useCallback(() => setSelected(null), []);
 
     if (!projects || projects.length === 0) {
         return (
             <section id="projects" className={SECTION}>
-                <div className="max-w-6xl mx-auto w-full text-center">
-                    <p className="text-[#64748b] font-mono">// 03. KARYA PILIHAN — Deployed Projects</p>
-                    <p className="text-[#94a3b8] mt-4">Belum ada project.</p>
-                </div>
+                <h2 className="text-center font-mono text-4xl text-[#F85149] md:text-5xl">
+                    My Project
+                </h2>
+                <p className="mt-10 text-center font-mono text-white/60">
+                    No projects yet.
+                </p>
             </section>
         );
     }
 
+    const items = projects.map(normalizeProject);
+
     return (
         <section id="projects" className={SECTION}>
-            <div className="max-w-6xl mx-auto w-full">
-                <FadeContent duration={700}>
-                    <p className="text-[#ef4444] font-mono text-sm mb-2">// 03. KARYA PILIHAN — Deployed Projects</p>
-                </FadeContent>
-                <BlurText
-                    text="Karya Pilihan"
-                    delay={70}
-                    animateBy="words"
-                    className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-8"
-                />
+            <div className="mx-auto w-full lg:w-[74%]">
+                <h2 className="text-center font-mono text-6xl font-semibold text-[#F85149] md:text-6xl font-semibold">
+                    My Project
+                </h2>
 
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-h-[65vh] overflow-y-auto pr-1 no-scrollbar">
-                    {projects.map((project, index) => (
-                        <AnimatedContent
+
+                <div className="mt-14 grid pl-px pt-px md:grid-cols-3">
+                    {items.map((project) => (
+                        <article
                             key={project.id}
-                            distance={50}
-                            delay={index * 0.1}
-                            duration={0.75}
-                            threshold={0.05}
+                            className={`group -ml-px -mt-px flex min-h-[19rem] flex-col border border-[#F85149] p-[clamp(0.75rem,1.1vw,1.5rem)] md:aspect-[1/1.05] ${
+                                project.published === false ? 'opacity-60' : ''
+                            }`}
                         >
-                            <SpotlightCard
-                                className={`!rounded-md !p-0 overflow-hidden h-full transition-all duration-300 hover:-translate-y-1 ${
-                                    project.published
-                                        ? '!border-[#2d3342] hover:!border-[#ef4444]'
-                                        : '!border-[#2d3342]/50 opacity-60'
-                                } !bg-[#0f131c]`}
-                                spotlightColor={spotlight}
-                            >
-                                <div className="relative z-10 group">
-                                    <div className="h-40 overflow-hidden bg-[#181c24]">
-                                        {project.image_url ? (
-                                            <img
-                                                src={project.image_url}
-                                                alt={project.title}
-                                                className="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105"
-                                                onError={(e) => { e.target.style.display = 'none'; }}
-                                            />
-                                        ) : (
-                                            <div className="w-full h-40 flex items-center justify-center text-[#64748b] font-mono text-sm">
-                                                no image
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div className="p-4">
-                                        <div className="flex items-center justify-between mb-1">
-                                            <h3 className="text-white font-semibold transition-colors group-hover:text-[#ef4444]">
-                                                {project.title}
-                                            </h3>
-                                            {!project.published && (
-                                                <span className="text-xs px-2 py-0.5 bg-[#eab308]/20 text-[#eab308] rounded font-mono">
-                                                    Draft
-                                                </span>
-                                            )}
-                                        </div>
-                                        {project.description && (
-                                            <p className="text-[#94a3b8] text-sm mb-3 line-clamp-2">
-                                                {project.description}
-                                            </p>
-                                        )}
-                                        {project.technologies && Array.isArray(project.technologies) && (
-                                            <div className="flex flex-wrap gap-1 mb-3">
-                                                {project.technologies.slice(0, 3).map((tech, idx) => (
-                                                    <span key={idx} className="text-xs px-2 py-0.5 bg-[#181c24] rounded text-[#64748b] font-mono">
-                                                        {tech}
-                                                    </span>
-                                                ))}
-                                                {project.technologies.length > 3 && (
-                                                    <span className="text-xs px-2 py-0.5 bg-[#181c24] rounded text-[#64748b] font-mono">
-                                                        +{project.technologies.length - 3}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        )}
-                                        <div className="flex gap-3">
-                                            {project.demo_url && project.demo_url !== 'not available' && (
-                                                <Magnet padding={20} magnetStrength={4}>
-                                                    <a
-                                                        href={project.demo_url}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="text-xs font-mono"
-                                                        style={{ color: accentColor }}
-                                                    >
-                                                        Live Demo
-                                                    </a>
-                                                </Magnet>
-                                            )}
-                                            {project.github_url && (
-                                                <Magnet padding={20} magnetStrength={4}>
-                                                    <a
-                                                        href={project.github_url}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="text-xs text-[#94a3b8] hover:text-white font-mono"
-                                                    >
-                                                        GitHub
-                                                    </a>
-                                                </Magnet>
-                                            )}
-                                        </div>
-                                    </div>
+                            <ScanLine
+                                onlyOnHover
+                                className="mb-[clamp(0.5rem,1vw,1.25rem)]"
+                            />
+
+                            <h3 className="font-mono text-[clamp(1.125rem,1.85vw,2.75rem)] text-white">
+                                {project.title}
+                                {project.published === false && (
+                                    <span className="ml-2 text-[0.55em] text-white/50">[draft]</span>
+                                )}
+                            </h3>
+                            <hr className="my-[clamp(0.5rem,1vw,1.25rem)] border-white/30" />
+                            <p className="line-clamp-5 font-mono text-[clamp(0.875rem,1.35vw,2rem)] text-white/90">
+                                {project.description}
+                            </p>
+
+
+                            {project.tech.length > 0 && (
+                                <div className="mt-auto flex flex-wrap gap-x-3 gap-y-1 pb-[clamp(0.75rem,1.2vw,1.5rem)] font-mono text-[clamp(0.75rem,1.1vw,1.25rem)] text-white/70">
+                                    {project.tech.map((t) => (
+                                        <span key={t}># {t}</span>
+                                    ))}
                                 </div>
-                            </SpotlightCard>
-                        </AnimatedContent>
+                            )}
+                            {/* ============================================== */}
+
+                            <button
+                                type="button"
+                                onClick={() => setSelected(project)}
+                                className="w-full border border-[#F85149]/60 py-[clamp(0.5rem,0.8vw,1.25rem)] font-mono text-[clamp(1rem,1.85vw,2.75rem)] text-white transition-colors duration-200 hover:border-[#F85149] hover:bg-[#F85149] hover:text-white focus-visible:border-[#F85149] focus-visible:bg-[#F85149] focus-visible:outline-none"
+                            >
+                                View Details
+                            </button>
+                        </article>
                     ))}
                 </div>
             </div>
+
+            <AnimatePresence>
+                {selected && (
+                    <ProjectModal
+                        key={selected.id}
+                        project={selected}
+                        onClose={handleClose}
+                    />
+                )}
+            </AnimatePresence>
         </section>
     );
 }

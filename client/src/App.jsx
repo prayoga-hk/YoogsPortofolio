@@ -6,8 +6,10 @@ import AdminDashboard from './pages/AdminDashboard';
 import Profile from './pages/admin/Profile';
 import Skills from './pages/admin/Skills';
 import Projects from './pages/admin/Projects';
-import Education from './pages/admin/Education';
-import Experience from './pages/admin/Experience';
+// HAPUS import Education dan Experience
+// import Education from './pages/admin/Education';
+// import Experience from './pages/admin/Experience';
+import Timeline from './pages/admin/Timeline'; // TAMBAHKAN IMPORT BARU INI
 import SocialLinks from './pages/admin/SocialLinks';
 import Settings from './pages/admin/Settings';
 import Home from './pages/Home';
@@ -32,13 +34,11 @@ function App() {
                     <Route path="profile" element={<Profile />} />
                     <Route path="skills" element={<Skills />} />
                     <Route path="projects" element={<Projects />} />
-                    <Route path="education" element={<Education />} />
-                    <Route path="experience" element={<Experience />} />
+                    <Route path="timeline" element={<Timeline />} />
                     <Route path="social-links" element={<SocialLinks />} />
                     <Route path="settings" element={<Settings />} />
                 </Route>
 
-                {/* ===== FALLBACK ===== */}
                 <Route path="*" element={<Home />} />
             </Routes>
         </Router>

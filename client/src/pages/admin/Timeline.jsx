@@ -2,37 +2,44 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { Plus, Edit, Trash2, X, Eye, EyeOff } from 'lucide-react';
 
-export default function Experience() {
-    const [experiences, setExperiences] = useState([]);
+export default function Timeline() {
+    const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const [editingExperience, setEditingExperience] = useState(null);
+    const [editingItem, setEditingItem] = useState(null);
+
     const [formData, setFormData] = useState({
-        title: '',           // ← diubah dari position
-        company: '',
+        type: 'study',
+        title: '',
+        subtitle: '',
         start_date: '',
         end_date: '',
         description: '',
-        technologies: '',
+        tags: '',
+        status: '',
         order_index: 0,
         published: true
     });
+
     const [deleteConfirm, setDeleteConfirm] = useState(null);
 
-    // Fetch experiences
-    const fetchExperiences = async () => {
+    useEffect(() => {
+        fetchTimeline();
+    }, []);
+
+    const fetchTimeline = async () => {
         setLoading(true);
         setError(null);
         try {
             const { data, error } = await supabase
-                .from('experiences')
+                .from('timelines')
                 .select('*')
                 .order('order_index', { ascending: true });
 
             if (error) throw error;
-            setExperiences(data || []);
+            setItems(data || []);
         } catch (err) {
             setError(err.message);
         } finally {
@@ -40,34 +47,33 @@ export default function Experience() {
         }
     };
 
-    useEffect(() => {
-        fetchExperiences();
-    }, []);
-
-    // Open modal for create/edit
-    const openModal = (experience = null) => {
-        if (experience) {
-            setEditingExperience(experience);
+    const openModal = (item = null) => {
+        if (item) {
+            setEditingItem(item);
             setFormData({
-                title: experience.title || '',           // ← diubah
-                company: experience.company || '',
-                start_date: experience.start_date || '',
-                end_date: experience.end_date || '',
-                description: experience.description || '',
-                technologies: experience.technologies ? JSON.stringify(experience.technologies) : '',
-                order_index: experience.order_index || 0,
-                published: experience.published !== undefined ? experience.published : true
+                type: item.type || 'study',
+                title: item.title || '',
+                subtitle: item.subtitle || '',
+                start_date: item.start_date || '',
+                end_date: item.end_date || '',
+                description: item.description || '',
+                tags: Array.isArray(item.tags) ? item.tags.join(', ') : '',
+                status: item.status || '',
+                order_index: item.order_index || 0,
+                published: item.published !== undefined ? item.published : true
             });
         } else {
-            setEditingExperience(null);
+            setEditingItem(null);
             setFormData({
-                title: '',           // ← diubah
-                company: '',
+                type: 'study',
+                title: '',
+                subtitle: '',
                 start_date: '',
                 end_date: '',
                 description: '',
-                technologies: '',
-                order_index: experiences.length,
+                tags: '',
+                status: '',
+                order_index: items.length,
                 published: true
             });
         }
@@ -78,20 +84,9 @@ export default function Experience() {
 
     const closeModal = () => {
         setShowModal(false);
-        setEditingExperience(null);
-        setFormData({
-            title: '',           // ← diubah
-            company: '',
-            start_date: '',
-            end_date: '',
-            description: '',
-            technologies: '',
-            order_index: 0,
-            published: true
-        });
+        setEditingItem(null);
     };
 
-    // Handle form input change
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
         setFormData(prev => ({
@@ -100,7 +95,6 @@ export default function Experience() {
         }));
     };
 
-    // Save experience
     const handleSave = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -108,57 +102,46 @@ export default function Experience() {
         setSuccess(null);
 
         try {
-            // Parse technologies from string to array
-            let techArray = [];
-            if (formData.technologies.trim()) {
-                try {
-                    // Try to parse as JSON array
-                    techArray = JSON.parse(formData.technologies);
-                    if (!Array.isArray(techArray)) {
-                        throw new Error('Must be an array');
-                    }
-                } catch {
-                    // If not valid JSON, split by comma
-                    techArray = formData.technologies.split(',').map(t => t.trim()).filter(Boolean);
-                }
-            }
+            const tagsArray = formData.tags
+                ? formData.tags.split(',').map(tag => tag.trim()).filter(Boolean)
+                : [];
 
-            const experienceData = {
-                title: formData.title,           // ← diubah
-                company: formData.company,
+            const timelineData = {
+                type: formData.type,
+                title: formData.title,
+                subtitle: formData.subtitle,
                 start_date: formData.start_date || null,
                 end_date: formData.end_date || null,
                 description: formData.description,
-                technologies: techArray,         // ← ARRAY
+                tags: tagsArray,
+                status: formData.status || null,
                 order_index: parseInt(formData.order_index) || 0,
                 published: formData.published,
                 updated_at: new Date().toISOString()
             };
 
-            if (editingExperience) {
-                // Update
+            if (editingItem) {
                 const { error } = await supabase
-                    .from('experiences')
-                    .update(experienceData)
-                    .eq('id', editingExperience.id);
+                    .from('timelines')
+                    .update(timelineData)
+                    .eq('id', editingItem.id);
 
                 if (error) throw error;
-                setSuccess('Experience berhasil diperbarui!');
+                setSuccess('Data berhasil diperbarui!');
             } else {
-                // Create
                 const { error } = await supabase
-                    .from('experiences')
+                    .from('timelines')
                     .insert([{
-                        ...experienceData,
+                        ...timelineData,
                         created_at: new Date().toISOString()
                     }]);
 
                 if (error) throw error;
-                setSuccess('Experience berhasil ditambahkan!');
+                setSuccess('Data berhasil ditambahkan!');
             }
 
             closeModal();
-            fetchExperiences();
+            fetchTimeline();
         } catch (err) {
             setError(err.message);
         } finally {
@@ -166,42 +149,39 @@ export default function Experience() {
         }
     };
 
-    // Delete experience
     const handleDelete = async (id) => {
         try {
             const { error } = await supabase
-                .from('experiences')
+                .from('timelines')
                 .delete()
                 .eq('id', id);
 
             if (error) throw error;
-            setSuccess('Experience berhasil dihapus!');
+            setSuccess('Data berhasil dihapus!');
             setDeleteConfirm(null);
-            fetchExperiences();
+            fetchTimeline();
         } catch (err) {
             setError(err.message);
         }
     };
 
-    // Toggle published status
-    const togglePublished = async (experience) => {
+    const togglePublished = async (item) => {
         try {
             const { error } = await supabase
-                .from('experiences')
+                .from('timelines')
                 .update({
-                    published: !experience.published,
+                    published: !item.published,
                     updated_at: new Date().toISOString()
                 })
-                .eq('id', experience.id);
+                .eq('id', item.id);
 
             if (error) throw error;
-            fetchExperiences();
+            fetchTimeline();
         } catch (err) {
             setError(err.message);
         }
     };
 
-    // Format date for display
     const formatDate = (date) => {
         if (!date) return 'Present';
         return new Date(date).toLocaleDateString('id-ID', {
@@ -210,10 +190,10 @@ export default function Experience() {
         });
     };
 
-    if (loading && experiences.length === 0) {
+    if (loading && items.length === 0) {
         return (
             <div className="flex justify-center items-center h-64">
-                <div className="text-zinc-400">Loading experiences...</div>
+                <div className="text-zinc-400">Loading timeline...</div>
             </div>
         );
     }
@@ -222,15 +202,15 @@ export default function Experience() {
         <div className="p-6">
             <div className="flex justify-between items-center mb-6">
                 <div>
-                    <h1 className="text-2xl font-bold text-white">Experience</h1>
-                    <p className="text-zinc-400">Kelola riwayat pengalaman</p>
+                    <h1 className="text-2xl font-bold text-white">Timeline (CV)</h1>
+                    <p className="text-zinc-400">Kelola riwayat pendidikan, pekerjaan, dan prestasi</p>
                 </div>
                 <button
                     onClick={() => openModal()}
                     className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition"
                 >
                     <Plus size={20} />
-                    Add Experience
+                    Add Timeline
                 </button>
             </div>
 
@@ -245,79 +225,72 @@ export default function Experience() {
                 </div>
             )}
 
-            {experiences.length === 0 ? (
+            {items.length === 0 ? (
                 <div className="bg-zinc-800/50 border border-zinc-700 rounded-lg p-12 text-center">
-                    <p className="text-zinc-400">Belum ada data pengalaman. Tambahkan pengalaman pertama!</p>
+                    <p className="text-zinc-400">Belum ada data. Tambahkan data pertama!</p>
                 </div>
             ) : (
                 <div className="bg-zinc-800/50 border border-zinc-700 rounded-lg overflow-x-auto">
-                    <table className="w-full min-w-[700px]">
+                    <table className="w-full min-w-[800px]">
                         <thead className="bg-zinc-800 border-b border-zinc-700">
                             <tr>
-                                <th className="text-left text-zinc-400 font-medium px-4 py-3">Title</th>  {/* ← diubah */}
-                                <th className="text-left text-zinc-400 font-medium px-4 py-3">Company</th>
+                                <th className="text-left text-zinc-400 font-medium px-4 py-3">Type</th>
+                                <th className="text-left text-zinc-400 font-medium px-4 py-3">Title</th>
+                                <th className="text-left text-zinc-400 font-medium px-4 py-3">Subtitle</th>
                                 <th className="text-left text-zinc-400 font-medium px-4 py-3">Period</th>
-                                <th className="text-left text-zinc-400 font-medium px-4 py-3">Technologies</th>
                                 <th className="text-left text-zinc-400 font-medium px-4 py-3">Status</th>
                                 <th className="text-right text-zinc-400 font-medium px-4 py-3">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {experiences.map((experience) => (
-                                <tr key={experience.id} className="border-b border-zinc-700/50 hover:bg-zinc-700/30 transition">
+                            {items.map((item) => (
+                                <tr key={item.id} className="border-b border-zinc-700/50 hover:bg-zinc-700/30 transition">
+                                    <td className="px-4 py-4">
+                                        <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${
+                                            item.type === 'study' ? 'bg-blue-500/20 text-blue-400' :
+                                            item.type === 'work' ? 'bg-green-500/20 text-green-400' :
+                                            'bg-yellow-500/20 text-yellow-400'
+                                        }`}>
+                                            {item.type}
+                                        </span>
+                                    </td>
                                     <td className="px-4 py-4">
                                         <div>
-                                            <div className="text-white font-medium">{experience.title}</div>  {/* ← diubah */}
-                                            {experience.description && (
+                                            <div className="text-white font-medium">{item.title}</div>
+                                            {item.description && (
                                                 <div className="text-zinc-400 text-sm truncate max-w-xs">
-                                                    {experience.description}
+                                                    {item.description}
                                                 </div>
                                             )}
                                         </div>
                                     </td>
-                                    <td className="px-4 py-4 text-zinc-300">{experience.company}</td>
+                                    <td className="px-4 py-4 text-zinc-300">{item.subtitle || '-'}</td>
                                     <td className="px-4 py-4 text-zinc-300">
-                                        {formatDate(experience.start_date)} - {formatDate(experience.end_date)}
-                                    </td>
-                                    <td className="px-4 py-4">
-                                        <div className="flex flex-wrap gap-1">
-                                            {experience.technologies && Array.isArray(experience.technologies) ? (
-                                                experience.technologies.map((tech, idx) => (
-                                                    <span
-                                                        key={idx}
-                                                        className="px-2 py-0.5 bg-zinc-700 text-zinc-300 text-xs rounded-full"
-                                                    >
-                                                        {tech}
-                                                    </span>
-                                                ))
-                                            ) : (
-                                                <span className="text-zinc-500 text-sm">-</span>
-                                            )}
-                                        </div>
+                                        {formatDate(item.start_date)} - {formatDate(item.end_date)}
                                     </td>
                                     <td className="px-4 py-4">
                                         <button
-                                            onClick={() => togglePublished(experience)}
+                                            onClick={() => togglePublished(item)}
                                             className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm transition ${
-                                                experience.published
+                                                item.published
                                                     ? 'bg-green-500/20 text-green-500 hover:bg-green-500/30'
                                                     : 'bg-zinc-600/30 text-zinc-400 hover:bg-zinc-600/50'
                                             }`}
                                         >
-                                            {experience.published ? <Eye size={14} /> : <EyeOff size={14} />}
-                                            {experience.published ? 'Published' : 'Draft'}
+                                            {item.published ? <Eye size={14} /> : <EyeOff size={14} />}
+                                            {item.published ? 'Published' : 'Draft'}
                                         </button>
                                     </td>
                                     <td className="px-4 py-4">
                                         <div className="flex justify-end gap-2">
                                             <button
-                                                onClick={() => openModal(experience)}
+                                                onClick={() => openModal(item)}
                                                 className="p-2 text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 rounded-lg transition"
                                             >
                                                 <Edit size={18} />
                                             </button>
                                             <button
-                                                onClick={() => setDeleteConfirm(experience.id)}
+                                                onClick={() => setDeleteConfirm(item.id)}
                                                 className="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition"
                                             >
                                                 <Trash2 size={18} />
@@ -334,8 +307,8 @@ export default function Experience() {
             {deleteConfirm && (
                 <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
                     <div className="bg-zinc-800 rounded-lg p-6 max-w-md w-full border border-zinc-700">
-                        <h3 className="text-xl font-bold text-white mb-2">Hapus Experience?</h3>
-                        <p className="text-zinc-400 mb-6">Data pengalaman ini akan dihapus secara permanen. Apakah Anda yakin?</p>
+                        <h3 className="text-xl font-bold text-white mb-2">Hapus Data?</h3>
+                        <p className="text-zinc-400 mb-6">Data ini akan dihapus secara permanen. Apakah Anda yakin?</p>
                         <div className="flex justify-end gap-3">
                             <button
                                 onClick={() => setDeleteConfirm(null)}
@@ -359,7 +332,7 @@ export default function Experience() {
                     <div className="bg-zinc-800 rounded-lg p-6 max-w-2xl w-full border border-zinc-700 max-h-[90vh] overflow-y-auto">
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-xl font-bold text-white">
-                                {editingExperience ? 'Edit Experience' : 'Tambah Experience'}
+                                {editingItem ? 'Edit Timeline' : 'Tambah Timeline'}
                             </h3>
                             <button
                                 onClick={closeModal}
@@ -371,6 +344,24 @@ export default function Experience() {
 
                         <form onSubmit={handleSave}>
                             <div className="space-y-4">
+
+                                <div>
+                                    <label className="block text-zinc-300 text-sm font-medium mb-1">
+                                        Kategori (Type) *
+                                    </label>
+                                    <select
+                                        name="type"
+                                        value={formData.type}
+                                        onChange={handleChange}
+                                        required
+                                        className="w-full bg-zinc-700 border border-zinc-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-red-500 transition"
+                                    >
+                                        <option value="study">Study (Pendidikan)</option>
+                                        <option value="work">Work (Pengalaman Kerja)</option>
+                                        <option value="credential">Credential (Prestasi/Sertifikat)</option>
+                                    </select>
+                                </div>
+
                                 <div>
                                     <label className="block text-zinc-300 text-sm font-medium mb-1">
                                         Title *
@@ -382,22 +373,21 @@ export default function Experience() {
                                         onChange={handleChange}
                                         required
                                         className="w-full bg-zinc-700 border border-zinc-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-red-500 transition"
-                                        placeholder="e.g. Frontend Developer"
+                                        placeholder="e.g. SMK PGRI 3 Malang / Frontend Dev / Juara 1"
                                     />
                                 </div>
 
                                 <div>
                                     <label className="block text-zinc-300 text-sm font-medium mb-1">
-                                        Company *
+                                        Subtitle
                                     </label>
                                     <input
                                         type="text"
-                                        name="company"
-                                        value={formData.company}
+                                        name="subtitle"
+                                        value={formData.subtitle}
                                         onChange={handleChange}
-                                        required
                                         className="w-full bg-zinc-700 border border-zinc-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-red-500 transition"
-                                        placeholder="e.g. PT Tech Indonesia"
+                                        placeholder="e.g. Rekayasa Perangkat Lunak / PT. Teknologi / Dicoding"
                                     />
                                 </div>
 
@@ -426,11 +416,40 @@ export default function Experience() {
                                             onChange={handleChange}
                                             className="w-full bg-zinc-700 border border-zinc-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-red-500 transition"
                                         />
-                                        <p className="text-zinc-500 text-xs mt-1">
-                                            Kosongkan jika masih berjalan
-                                        </p>
+                                        <p className="text-zinc-500 text-xs mt-1">Kosongkan jika masih berjalan</p>
                                     </div>
                                 </div>
+
+                                {(formData.type === 'work' || formData.type === 'credential') && (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-zinc-300 text-sm font-medium mb-1">
+                                                Status
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="status"
+                                                value={formData.status}
+                                                onChange={handleChange}
+                                                className="w-full bg-zinc-700 border border-zinc-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-red-500 transition"
+                                                placeholder="e.g. Active, Completed, Graduated"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-zinc-300 text-sm font-medium mb-1">
+                                                Tags (Pisahkan dengan koma)
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="tags"
+                                                value={formData.tags}
+                                                onChange={handleChange}
+                                                className="w-full bg-zinc-700 border border-zinc-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-red-500 transition"
+                                                placeholder="e.g. React, Laravel, Figma"
+                                            />
+                                        </div>
+                                    </div>
+                                )}
 
                                 <div>
                                     <label className="block text-zinc-300 text-sm font-medium mb-1">
@@ -442,25 +461,8 @@ export default function Experience() {
                                         onChange={handleChange}
                                         rows="3"
                                         className="w-full bg-zinc-700 border border-zinc-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-red-500 transition resize-y"
-                                        placeholder="Deskripsi pengalaman..."
+                                        placeholder="Deskripsi detail..."
                                     />
-                                </div>
-
-                                <div>
-                                    <label className="block text-zinc-300 text-sm font-medium mb-1">
-                                        Technologies
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="technologies"
-                                        value={formData.technologies}
-                                        onChange={handleChange}
-                                        className="w-full bg-zinc-700 border border-zinc-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-red-500 transition"
-                                        placeholder='["React", "Tailwind"] atau React, Tailwind'
-                                    />
-                                    <p className="text-zinc-500 text-xs mt-1">
-                                        Bisa menggunakan format JSON array atau dipisahkan koma
-                                    </p>
                                 </div>
 
                                 <div>
@@ -503,7 +505,7 @@ export default function Experience() {
                                     disabled={loading}
                                     className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    {loading ? 'Menyimpan...' : editingExperience ? 'Update' : 'Tambah'}
+                                    {loading ? 'Menyimpan...' : editingItem ? 'Update' : 'Tambah'}
                                 </button>
                             </div>
                         </form>
