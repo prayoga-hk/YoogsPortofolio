@@ -7,7 +7,7 @@ const ACCENT_COLOR = '#F85149';
 const NAME = 'PRAYOGA';
 const SUBTITLE =
     'I am a software engineering student who is still learning and developing my skills.';
-const RESUME_URL = '#';
+const RESUME_URL = 'https://docs.google.com/document/d/1fsZbdjxWIHyJVvaWMexd-ZpLzEQJSlsf/edit?usp=sharing&ouid=107313626644357392163&rtpof=true&sd=true';
 
 const TERMINAL_OPACITY = 0.85;
 const PIXEL_STEPS = 8;
